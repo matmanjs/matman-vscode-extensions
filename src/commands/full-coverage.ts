@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {readFileSync} from 'fs';
+import {resolve} from 'path';
 import {parseStringPromise} from 'xml2js';
 import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
@@ -33,24 +34,18 @@ export class FullCoverage extends Command {
 
     const data = await this.getParseData(
       vscode.workspace.rootPath +
-        '/.dwt_output/unit_test_report/coverage/cobertura-coverage.xml',
+        '/.dwt_output/e2e_test_report/coverage/cobertura-coverage.xml',
     );
 
-    console.log(data);
+    // 判断是否选择了可以渲染覆盖率的文件
+    const flag = this.chooseCorrectFile(data, fileName);
 
-    // // 判断是否选择了可以渲染覆盖率的文件
-    // const flag = this.chooseCorrectFile(data, fileName);
+    if (!flag) {
+      return;
+    }
 
-    // if (!flag) {
-    //   return;
-    // }
-
-    // // 渲染文件并获取当前文件的文件名，hit行数，总行数
-    // const [curFile, curHit, curFound] = this.renderFile(
-    //   data,
-    //   fileName,
-    //   lineCount,
-    // );
+    // 渲染文件
+    this.renderFile(data, fileName, lineCount);
 
     // this.computeCurrentCovRate(curFile, curHit, curFound);
 
@@ -58,22 +53,29 @@ export class FullCoverage extends Command {
   }
 
   // 获取解析好的数据
-  getParseData(lcovPath: string) {
-    return parseStringPromise(readFileSync(lcovPath));
+  async getParseData(lcovPath: string) {
+    const resMap: Record<string, any> = {};
+    const xml = await parseStringPromise(readFileSync(lcovPath));
+    const callPath = xml.coverage.sources[0].source[0];
+    const classes = xml.coverage.packages[0].package.map(
+      (item: any) => item.classes[0].class,
+    );
+
+    for (const item of classes) {
+      item.map((item: any) => {
+        resMap[resolve(callPath, item.$.filename) as string] = {
+          lineRate: item.$['line-rate'],
+          lines: item.lines[0].line.map((item: any) => item.$),
+        };
+      });
+    }
+
+    return {total: xml.coverage.$, files: resMap};
   }
 
   // 判断是否选择了正确的文件进行渲染
   chooseCorrectFile(data: any, fileName: string): boolean {
-    const arr: Array<Info> = data;
-    let flag = false;
-
-    arr.forEach((info: Info) => {
-      if (
-        fileName.toLocaleLowerCase().includes(info.file.toLocaleLowerCase())
-      ) {
-        flag = true;
-      }
-    });
+    const flag = data.files[fileName];
 
     if (!flag) {
       showWarning('当前文件未被覆盖！');
@@ -84,38 +86,19 @@ export class FullCoverage extends Command {
 
   // 渲染文件
   renderFile(data: any, fileName: string, lineCount: number): any {
-    const arr: Array<Info> = data;
-    let curFile: string = '';
-    let curHit: number = 0;
-    let curFound: number = 0;
+    const info = data.files[fileName];
+    const len = info.lines.length;
 
-    arr.forEach((info: Info) => {
-      // 找到当前选中的文件
-      if (
-        fileName.toLocaleLowerCase().includes(info.file.toLocaleLowerCase())
-      ) {
-        const {lines} = info;
-        const {details} = lines;
-        const len = details.length;
+    // 若文件当前的行数小于lcov所能统计到的有覆盖率的最后一行
+    if (lineCount && info.lines[len - 1].number > lineCount) {
+      showWarning('覆盖率文件未更新，渲染测试用例行数有误');
+      return;
+    }
 
-        curFile = info.file;
-        curHit = lines.hit;
-        curFound = lines.found;
-
-        // 若文件当前的行数小于lcov所能统计到的有覆盖率的最后一行
-        if (lineCount && details[len - 1].line > lineCount) {
-          showWarning('覆盖率文件未更新，渲染测试用例行数有误');
-          return;
-        }
-
-        // 渲染文件
-        details.forEach((detail: Detail) => {
-          decoration(detail.line - 1, detail.hit);
-        });
-      }
+    // 渲染文件
+    info.lines.forEach((detail: any) => {
+      decoration(detail.number - 1, +detail.hits);
     });
-
-    return [curFile, curHit, curFound];
   }
 
   // 计算当前文件覆盖率
