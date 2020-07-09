@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {exec} from 'child_process';
 import {collectCommands, Command, CommandNames} from './common';
 import gitDiffParser, {File} from 'gitdiff-parser';
 import {showInformation, showWarning} from '../information';
@@ -7,8 +8,7 @@ import {decoration, removeDecoration} from '../decoration';
 import {getFilePath, getLcovPath} from '../utils';
 import {Detail, Info} from '../types/interface';
 import {getOS} from '../utils/os';
-const {exec} = require('child_process');
-const parse = require('lcov-parse');
+// const parse = require('lcov-parse');
 
 @collectCommands()
 export class IncrementCoverage extends Command {
@@ -68,9 +68,7 @@ export class IncrementCoverage extends Command {
 
   // 获取解析好的数据
   getParseData(lcovPath: string) {
-    return new Promise(resolve => {
-      parse(lcovPath, (error: any, data: any) => resolve(data));
-    });
+    return Promise.resolve();
   }
 
   // 判断是否选择了正确的文件进行渲染

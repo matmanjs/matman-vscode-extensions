@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
+import {readFileSync} from 'fs';
+import {parseStringPromise} from 'xml2js';
 import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
 import {setStatusBar} from '../statusBar';
 import {decoration, removeDecoration} from '../decoration';
 import {getFilePath, getLcovPath} from '../utils';
 import {Detail, Info} from '../types/interface';
-const parse = require('lcov-parse');
 
 @collectCommands()
 export class FullCoverage extends Command {
@@ -30,32 +31,35 @@ export class FullCoverage extends Command {
 
     removeDecoration(editor, lineCount);
 
-    const data = await this.getParseData(lcovPath);
-
-    // 判断是否选择了可以渲染覆盖率的文件
-    const flag = this.chooseCorrectFile(data, fileName);
-
-    if (!flag) {
-      return;
-    }
-
-    // 渲染文件并获取当前文件的文件名，hit行数，总行数
-    const [curFile, curHit, curFound] = this.renderFile(
-      data,
-      fileName,
-      lineCount,
+    const data = await this.getParseData(
+      vscode.workspace.rootPath +
+        '/.dwt_output/unit_test_report/coverage/cobertura-coverage.xml',
     );
 
-    this.computeCurrentCovRate(curFile, curHit, curFound);
+    console.log(data);
 
-    this.computeTotalCovRate(data);
+    // // 判断是否选择了可以渲染覆盖率的文件
+    // const flag = this.chooseCorrectFile(data, fileName);
+
+    // if (!flag) {
+    //   return;
+    // }
+
+    // // 渲染文件并获取当前文件的文件名，hit行数，总行数
+    // const [curFile, curHit, curFound] = this.renderFile(
+    //   data,
+    //   fileName,
+    //   lineCount,
+    // );
+
+    // this.computeCurrentCovRate(curFile, curHit, curFound);
+
+    // this.computeTotalCovRate(data);
   }
 
   // 获取解析好的数据
   getParseData(lcovPath: string) {
-    return new Promise(resolve => {
-      parse(lcovPath, (error: any, data: any) => resolve(data));
-    });
+    return parseStringPromise(readFileSync(lcovPath));
   }
 
   // 判断是否选择了正确的文件进行渲染

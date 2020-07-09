@@ -37,6 +37,6 @@ export abstract class Command implements Disposable {
 }
 
 export enum CommandNames {
-  FULL_COVERAGE = 'dwt.fullcoverage',
-  INCREMENT_COVERAGE = 'dwt.incrementcoverage',
+  FULL_COVERAGE = 'matman.fullcoverage',
+  INCREMENT_COVERAGE = 'matman.incrementcoverage',
 }
