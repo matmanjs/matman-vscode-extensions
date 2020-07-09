@@ -1,14 +1,14 @@
-import * as vscode from "vscode";
-import { collectCommands, Command, CommandNames } from "./common";
-import gitDiffParser, { File } from "gitdiff-parser";
-import { showInformation, showWarning } from "../information";
-import { setStatusBar } from "../statusBar";
-import { decoration, removeDecoration } from "../decoration";
-import { getFilePath, getLcovPath } from "../utils";
-import { Detail, Info } from "../types/interface";
-import { getOS } from "../utils/os";
-const { exec } = require("child_process");
-const parse = require("lcov-parse");
+import * as vscode from 'vscode';
+import {collectCommands, Command, CommandNames} from './common';
+import gitDiffParser, {File} from 'gitdiff-parser';
+import {showInformation, showWarning} from '../information';
+import {setStatusBar} from '../statusBar';
+import {decoration, removeDecoration} from '../decoration';
+import {getFilePath, getLcovPath} from '../utils';
+import {Detail, Info} from '../types/interface';
+import {getOS} from '../utils/os';
+const {exec} = require('child_process');
+const parse = require('lcov-parse');
 
 @collectCommands()
 export class IncrementCoverage extends Command {
@@ -18,7 +18,7 @@ export class IncrementCoverage extends Command {
   async parseLocv() {
     const dwtConfigPath = vscode.workspace
       .getConfiguration()
-      .get("dwt.coverage.lcovpath", vscode.ConfigurationTarget.Global)
+      .get('dwt.coverage.lcovpath', vscode.ConfigurationTarget.Global)
       .toString();
     const lcovPath = getLcovPath(dwtConfigPath);
     const editor = vscode.window.activeTextEditor;
@@ -27,8 +27,8 @@ export class IncrementCoverage extends Command {
       return;
     }
 
-    const { fileName } = editor.document;
-    const { lineCount } = editor.document;
+    const {fileName} = editor.document;
+    const {lineCount} = editor.document;
 
     removeDecoration(editor, lineCount);
 
@@ -43,8 +43,8 @@ export class IncrementCoverage extends Command {
     }
 
     exec(
-      "git diff -U0",
-      { cwd: vscode.workspace.rootPath },
+      'git diff -U0',
+      {cwd: vscode.workspace.rootPath},
       (err: any, stdout: any, stderr: any) => {
         if (err) {
           console.log(err);
@@ -62,13 +62,13 @@ export class IncrementCoverage extends Command {
         }
 
         this.computeIncrementCovRate(data, diffData, fileName);
-      }
+      },
     );
   }
 
   // 获取解析好的数据
   getParseData(lcovPath: string) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       parse(lcovPath, (error: any, data: any) => resolve(data));
     });
   }
@@ -87,7 +87,7 @@ export class IncrementCoverage extends Command {
     });
 
     if (!flag) {
-      showWarning("当前文件未被覆盖！");
+      showWarning('当前文件未被覆盖！');
     }
 
     return flag;
@@ -99,8 +99,8 @@ export class IncrementCoverage extends Command {
 
     diffData.forEach((diffItem: File) => {
       const platform = getOS();
-      if (platform === "Windows") {
-        diffItem.newPath = diffItem.newPath.replace(/\//g, "\\");
+      if (platform === 'Windows') {
+        diffItem.newPath = diffItem.newPath.replace(/\//g, '\\');
       }
       if (
         fileName
@@ -112,7 +112,7 @@ export class IncrementCoverage extends Command {
     });
 
     if (!diff) {
-      showWarning("该文件没有增量代码");
+      showWarning('该文件没有增量代码');
     }
 
     return diff;
@@ -136,9 +136,9 @@ export class IncrementCoverage extends Command {
           // 统计变换了的行号
           const diffLineArr: Array<number> = [];
 
-          diffItem.hunks.forEach((hunk) => {
-            hunk.changes.forEach((change) => {
-              if (change.type === "insert" && change.lineNumber) {
+          diffItem.hunks.forEach(hunk => {
+            hunk.changes.forEach(change => {
+              if (change.type === 'insert' && change.lineNumber) {
                 diffLineArr.push(change.lineNumber);
               }
             });
@@ -149,11 +149,11 @@ export class IncrementCoverage extends Command {
 
           // 统计lcov中有记录的行
           const lcovLineArr: Array<number> = [];
-          const { details } = info.lines;
+          const {details} = info.lines;
 
           details.forEach((detail: Detail) => {
-            const { hit } = detail;
-            const { line } = detail;
+            const {hit} = detail;
+            const {line} = detail;
 
             lcovLineHit.set(line, hit);
             lcovLineArr.push(line);
@@ -161,7 +161,7 @@ export class IncrementCoverage extends Command {
 
           // 求lcov与diff的交集
           const diffLineArrSet = new Set(diffLineArr);
-          const intersectArr = lcovLineArr.filter((x) => diffLineArrSet.has(x));
+          const intersectArr = lcovLineArr.filter(x => diffLineArrSet.has(x));
 
           intersectArr.forEach((line: number) => {
             covIncreLine += lcovLineHit.get(line) > 0 ? 1 : 0;
@@ -179,7 +179,7 @@ export class IncrementCoverage extends Command {
             this.computeCurIncrementRate(
               fileName,
               curCovIncreLine,
-              curTotalIncreLine
+              curTotalIncreLine,
             );
             this.renderFile(intersectArr, lcovLineHit);
           }
@@ -197,13 +197,13 @@ export class IncrementCoverage extends Command {
   computeCurIncrementRate(
     fileName: string,
     curCovIncreLine: number,
-    curTotalIncreLine: number
+    curTotalIncreLine: number,
   ) {
     const curIncreCovRate = (curCovIncreLine / curTotalIncreLine) * 100;
     const currentPath = getFilePath(fileName);
 
     showInformation(
-      `${currentPath}的增量覆盖率为: ${curIncreCovRate.toFixed(2)}%`
+      `${currentPath}的增量覆盖率为: ${curIncreCovRate.toFixed(2)}%`,
     );
   }
 

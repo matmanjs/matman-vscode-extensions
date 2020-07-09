@@ -1,7 +1,7 @@
-import { commands, Disposable, ExtensionContext } from 'vscode';
+import {commands, Disposable, ExtensionContext} from 'vscode';
 
 interface CommandConstructor {
-  new(): Command;
+  new (): Command;
 }
 
 const commandsConstructor: CommandConstructor[] = [];
@@ -13,7 +13,7 @@ export function collectCommands(): ClassDecorator {
 }
 
 export function registerExtensionCommands(context: ExtensionContext) {
-  commandsConstructor.forEach((C) => {
+  commandsConstructor.forEach(C => {
     context.subscriptions.push(new C());
   });
 }
@@ -40,4 +40,3 @@ export enum CommandNames {
   FULL_COVERAGE = 'dwt.fullcoverage',
   INCREMENT_COVERAGE = 'dwt.incrementcoverage',
 }
-

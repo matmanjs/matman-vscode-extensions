@@ -1,7 +1,7 @@
-const os = require('os');
+import {platform as Platform} from 'os';
 
 export function getOS() {
-  const platform = os.platform();
+  const platform = Platform();
   if (platform === 'darwin') {
     return 'MAC OS';
   }
@@ -15,7 +15,7 @@ export function getOS() {
 }
 
 export function getFileSeparator() {
-  const platform = os.platform();
+  const platform = Platform();
   if (platform === 'win32') {
     return '\\';
   }

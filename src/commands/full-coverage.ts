@@ -1,11 +1,11 @@
-import * as vscode from "vscode";
-import { collectCommands, Command, CommandNames } from "./common";
-import { showInformation, showWarning } from "../information";
-import { setStatusBar } from "../statusBar";
-import { decoration, removeDecoration } from "../decoration";
-import { getFilePath, getLcovPath } from "../utils";
-import { Detail, Info } from "../types/interface";
-const parse = require("lcov-parse");
+import * as vscode from 'vscode';
+import {collectCommands, Command, CommandNames} from './common';
+import {showInformation, showWarning} from '../information';
+import {setStatusBar} from '../statusBar';
+import {decoration, removeDecoration} from '../decoration';
+import {getFilePath, getLcovPath} from '../utils';
+import {Detail, Info} from '../types/interface';
+const parse = require('lcov-parse');
 
 @collectCommands()
 export class FullCoverage extends Command {
@@ -16,7 +16,7 @@ export class FullCoverage extends Command {
   async parseLocv() {
     const dwtConfigPath = vscode.workspace
       .getConfiguration()
-      .get("dwt.coverage.lcovpath", vscode.ConfigurationTarget.Global)
+      .get('dwt.coverage.lcovpath', vscode.ConfigurationTarget.Global)
       .toString();
     const lcovPath = getLcovPath(dwtConfigPath);
     const editor = vscode.window.activeTextEditor;
@@ -25,8 +25,8 @@ export class FullCoverage extends Command {
       return;
     }
 
-    const { fileName } = editor.document;
-    const { lineCount } = editor.document;
+    const {fileName} = editor.document;
+    const {lineCount} = editor.document;
 
     removeDecoration(editor, lineCount);
 
@@ -43,7 +43,7 @@ export class FullCoverage extends Command {
     const [curFile, curHit, curFound] = this.renderFile(
       data,
       fileName,
-      lineCount
+      lineCount,
     );
 
     this.computeCurrentCovRate(curFile, curHit, curFound);
@@ -53,7 +53,7 @@ export class FullCoverage extends Command {
 
   // 获取解析好的数据
   getParseData(lcovPath: string) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       parse(lcovPath, (error: any, data: any) => resolve(data));
     });
   }
@@ -72,7 +72,7 @@ export class FullCoverage extends Command {
     });
 
     if (!flag) {
-      showWarning("当前文件未被覆盖！");
+      showWarning('当前文件未被覆盖！');
     }
 
     return flag;
@@ -81,7 +81,7 @@ export class FullCoverage extends Command {
   // 渲染文件
   renderFile(data: any, fileName: string, lineCount: number): any {
     const arr: Array<Info> = data;
-    let curFile: string = "";
+    let curFile: string = '';
     let curHit: number = 0;
     let curFound: number = 0;
 
@@ -90,8 +90,8 @@ export class FullCoverage extends Command {
       if (
         fileName.toLocaleLowerCase().includes(info.file.toLocaleLowerCase())
       ) {
-        const { lines } = info;
-        const { details } = lines;
+        const {lines} = info;
+        const {details} = lines;
         const len = details.length;
 
         curFile = info.file;
@@ -100,7 +100,7 @@ export class FullCoverage extends Command {
 
         // 若文件当前的行数小于lcov所能统计到的有覆盖率的最后一行
         if (lineCount && details[len - 1].line > lineCount) {
-          showWarning("覆盖率文件未更新，渲染测试用例行数有误");
+          showWarning('覆盖率文件未更新，渲染测试用例行数有误');
           return;
         }
 

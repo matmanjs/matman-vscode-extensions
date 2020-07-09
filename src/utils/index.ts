@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { getOS, getFileSeparator } from '../utils/os';
+import {getOS, getFileSeparator} from '../utils/os';
 
 // 获取文件路径
 export function getFilePath(fileName: string) {
   // 有的项目info.file会带上整个路径，加一层判断
-  const { rootPath } = vscode.workspace;
+  const {rootPath} = vscode.workspace;
   let currentPath;
 
   if (rootPath && fileName.includes(rootPath)) {

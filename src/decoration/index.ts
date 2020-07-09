@@ -2,7 +2,10 @@ import * as vscode from 'vscode';
 
 const DecorationArr: any[] = [];
 
-function createDecorationType(hit: boolean, theme: number): vscode.TextEditorDecorationType {
+function createDecorationType(
+  hit: boolean,
+  theme: number,
+): vscode.TextEditorDecorationType {
   if (hit) {
     return vscode.window.createTextEditorDecorationType({
       backgroundColor: theme === 1 ? '#48D36D' : '#006400',
@@ -13,8 +16,14 @@ function createDecorationType(hit: boolean, theme: number): vscode.TextEditorDec
   });
 }
 
-function setDecoration(editor: vscode.TextEditor, decorationType: vscode.TextEditorDecorationType, line: number): void {
-  editor.setDecorations(decorationType, [new vscode.Range(line, 0, line, editor.document.lineAt(line).text.length)]);
+function setDecoration(
+  editor: vscode.TextEditor,
+  decorationType: vscode.TextEditorDecorationType,
+  line: number,
+): void {
+  editor.setDecorations(decorationType, [
+    new vscode.Range(line, 0, line, editor.document.lineAt(line).text.length),
+  ]);
 }
 
 export function decoration(line: number, hit: number): void {
@@ -41,9 +50,7 @@ export function decoration(line: number, hit: number): void {
 }
 
 export function removeDecoration(editor: vscode.TextEditor, lineCount: number) {
-  DecorationArr.forEach((obj) => {
+  DecorationArr.forEach(obj => {
     obj.dispose();
   });
 }
-
-
