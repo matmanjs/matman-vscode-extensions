@@ -16,6 +16,19 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": [
+      {
+        "type": "object",
+        "title": "MatmanHelper",
+        "properties": {
+          "dwt.coverage.lcovpath": {
+            "type": "string",
+            "default": ".dwt_output",
+            "markdownDescription": "产物输出路径"
+          }
+        }
+      }
+    ],
     "commands": [
       {
         "command": "matman.helloWorld",

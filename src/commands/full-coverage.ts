@@ -1,13 +1,11 @@
 import * as vscode from 'vscode';
-import {readFileSync} from 'fs';
-import {resolve} from 'path';
-import {parseStringPromise} from 'xml2js';
+import {resolve, relative} from 'path';
 import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
 import {setStatusBar} from '../statusBar';
 import {decoration, removeDecoration} from '../decoration';
-import {getFilePath, getLcovPath} from '../utils';
-import {Detail, Info} from '../types/interface';
+import {Parser} from '../utils/parser';
+import {Info} from '../types/interface';
 
 @collectCommands()
 export class FullCoverage extends Command {
@@ -20,7 +18,6 @@ export class FullCoverage extends Command {
       .getConfiguration()
       .get('dwt.coverage.lcovpath', vscode.ConfigurationTarget.Global)
       .toString();
-    const lcovPath = getLcovPath(dwtConfigPath);
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -33,8 +30,7 @@ export class FullCoverage extends Command {
     removeDecoration(editor, lineCount);
 
     const data = await this.getParseData(
-      vscode.workspace.rootPath +
-        '/.dwt_output/e2e_test_report/coverage/cobertura-coverage.xml',
+      resolve(vscode.workspace.rootPath as string, dwtConfigPath),
     );
 
     // 判断是否选择了可以渲染覆盖率的文件
@@ -47,35 +43,19 @@ export class FullCoverage extends Command {
     // 渲染文件
     this.renderFile(data, fileName, lineCount);
 
-    // this.computeCurrentCovRate(curFile, curHit, curFound);
+    this.computeCurrentCovRate(data, fileName);
 
     // this.computeTotalCovRate(data);
   }
 
   // 获取解析好的数据
   async getParseData(lcovPath: string) {
-    const resMap: Record<string, any> = {};
-    const xml = await parseStringPromise(readFileSync(lcovPath));
-    const callPath = xml.coverage.sources[0].source[0];
-    const classes = xml.coverage.packages[0].package.map(
-      (item: any) => item.classes[0].class,
-    );
-
-    for (const item of classes) {
-      item.map((item: any) => {
-        resMap[resolve(callPath, item.$.filename) as string] = {
-          lineRate: item.$['line-rate'],
-          lines: item.lines[0].line.map((item: any) => item.$),
-        };
-      });
-    }
-
-    return {total: xml.coverage.$, files: resMap};
+    return await new Parser(lcovPath).run();
   }
 
   // 判断是否选择了正确的文件进行渲染
   chooseCorrectFile(data: any, fileName: string): boolean {
-    const flag = data.files[fileName];
+    const flag = data[fileName];
 
     if (!flag) {
       showWarning('当前文件未被覆盖！');
@@ -86,7 +66,7 @@ export class FullCoverage extends Command {
 
   // 渲染文件
   renderFile(data: any, fileName: string, lineCount: number): any {
-    const info = data.files[fileName];
+    const info = data[fileName];
     const len = info.lines.length;
 
     // 若文件当前的行数小于lcov所能统计到的有覆盖率的最后一行
@@ -102,11 +82,15 @@ export class FullCoverage extends Command {
   }
 
   // 计算当前文件覆盖率
-  computeCurrentCovRate(fileName: string, hit: number, found: number): void {
-    const currentCovRate = (hit / found) * 100;
-    const currentPath = getFilePath(fileName);
+  computeCurrentCovRate(data: any, fileName: string): void {
+    const currentCovRate = data[fileName].lineRate * 100;
 
-    showInformation(`${currentPath}覆盖率为: ${currentCovRate.toFixed(2)}%`);
+    showInformation(
+      `${relative(
+        vscode.workspace.rootPath as string,
+        fileName,
+      )} 覆盖率为: ${currentCovRate.toFixed(2)}%`,
+    );
   }
 
   // 计算全量覆盖率
