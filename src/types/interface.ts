@@ -1,18 +1,17 @@
-export interface Detail {
-  line: number;
-  hit: number;
+export interface Total {
+  linesCovered: number;
+  linesValid: number;
 }
 
 export interface DetailLines {
-  found: number;
-  hit: number;
-  details: Array<Detail>;
+  lineRate: 1;
+  lines: [
+    {
+      branch: string;
+      hits: number;
+      number: string;
+    },
+  ];
 }
 
-export interface Info {
-  lines: DetailLines;
-  functions: Object;
-  branches: Object;
-  title: string;
-  file: string;
-}
+export type Info = Record<string | '$', Total | DetailLines>;
