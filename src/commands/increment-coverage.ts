@@ -1,26 +1,27 @@
 import * as vscode from 'vscode';
 import {exec} from 'child_process';
-import {collectCommands, Command, CommandNames} from './common';
 import gitDiffParser, {File} from 'gitdiff-parser';
+import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
 import {setStatusBar} from '../statusBar';
 import {decoration, removeDecoration} from '../decoration';
-import {getFilePath, getLcovPath} from '../utils';
-import {Detail, Info} from '../types/interface';
+import {getFilePath} from '../utils';
+import {Parser} from '../utils/parser';
+import {Info, DetailLines} from '../types/interface';
 import {getOS} from '../utils/os';
-// const parse = require('lcov-parse');
 
 @collectCommands()
 export class IncrementCoverage extends Command {
   constructor() {
     super(CommandNames.INCREMENT_COVERAGE);
   }
+
   async parseLocv() {
     const dwtConfigPath = vscode.workspace
       .getConfiguration()
       .get('dwt.coverage.lcovpath', vscode.ConfigurationTarget.Global)
       .toString();
-    const lcovPath = getLcovPath(dwtConfigPath);
+
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -33,7 +34,7 @@ export class IncrementCoverage extends Command {
     removeDecoration(editor, lineCount);
 
     // 获取lcov覆盖率数据
-    const data = await this.getParseData(lcovPath);
+    const data = (await this.getParseData(dwtConfigPath)) as Info;
 
     // 判断是否选择了可以计算增量覆盖率的文件
     const flag = this.chooseCorrectFile(data, fileName);
@@ -67,28 +68,19 @@ export class IncrementCoverage extends Command {
   }
 
   // 获取解析好的数据
-  getParseData(lcovPath: string) {
-    return Promise.resolve();
+  async getParseData(lcovPath: string) {
+    return await new Parser(lcovPath).run();
   }
 
   // 判断是否选择了正确的文件进行渲染
-  chooseCorrectFile(data: any, fileName: string): boolean {
-    const arr: Array<Info> = data;
-    let flag = false;
-
-    arr.forEach((info: Info) => {
-      if (
-        fileName.toLocaleLowerCase().includes(info.file.toLocaleLowerCase())
-      ) {
-        flag = true;
-      }
-    });
+  chooseCorrectFile(data: Info, fileName: string): boolean {
+    const flag = data[fileName];
 
     if (!flag) {
       showWarning('当前文件未被覆盖！');
     }
 
-    return flag;
+    return !!flag;
   }
 
   // 判断选中的文件是否有增量代码
@@ -117,72 +109,74 @@ export class IncrementCoverage extends Command {
   }
 
   // 计算增量覆盖率
-  computeIncrementCovRate(data: any, diffData: File[], fileName: string): void {
-    const arr: Array<Info> = data;
+  computeIncrementCovRate(
+    data: Info,
+    diffData: File[],
+    fileName: string,
+  ): void {
     let totalIncreLine: number = 0;
     let covIncreLine: number = 0;
 
-    arr.forEach((info: Info) => {
-      diffData.forEach((diffItem: File) => {
-        const lcovFilePath: string = info.file;
-        const diffFilePath: string = diffItem.newPath;
+    diffData.forEach((diffItem: File) => {
+      const diffFilePath: string = diffItem.newPath;
 
-        if (lcovFilePath === diffFilePath) {
-          let curTotalIncreLine: number = 0;
-          let curCovIncreLine: number = 0;
+      if (fileName === diffFilePath) {
+        const info = data[fileName] as DetailLines;
 
-          // 统计变换了的行号
-          const diffLineArr: Array<number> = [];
+        let curTotalIncreLine: number = 0;
+        let curCovIncreLine: number = 0;
 
-          diffItem.hunks.forEach(hunk => {
-            hunk.changes.forEach(change => {
-              if (change.type === 'insert' && change.lineNumber) {
-                diffLineArr.push(change.lineNumber);
-              }
-            });
+        // 统计变换了的行号
+        const diffLineArr: Array<number> = [];
+
+        diffItem.hunks.forEach(hunk => {
+          hunk.changes.forEach(change => {
+            if (change.type === 'insert' && change.lineNumber) {
+              diffLineArr.push(change.lineNumber);
+            }
           });
+        });
 
-          // 统计每行对应的hit数
-          const lcovLineHit = new Map();
+        // 统计每行对应的hit数
+        const lcovLineHit = new Map();
 
-          // 统计lcov中有记录的行
-          const lcovLineArr: Array<number> = [];
-          const {details} = info.lines;
+        // 统计lcov中有记录的行
+        const lcovLineArr: Array<number> = [];
+        const details = info.lines;
 
-          details.forEach((detail: Detail) => {
-            const {hit} = detail;
-            const {line} = detail;
+        details.forEach(detail => {
+          const {hits} = detail;
+          const {number} = detail;
 
-            lcovLineHit.set(line, hit);
-            lcovLineArr.push(line);
-          });
+          lcovLineHit.set(number, hits);
+          lcovLineArr.push(parseInt(number));
+        });
 
-          // 求lcov与diff的交集
-          const diffLineArrSet = new Set(diffLineArr);
-          const intersectArr = lcovLineArr.filter(x => diffLineArrSet.has(x));
+        // 求lcov与diff的交集
+        const diffLineArrSet = new Set(diffLineArr);
+        const intersectArr = lcovLineArr.filter(x => diffLineArrSet.has(x));
 
-          intersectArr.forEach((line: number) => {
-            covIncreLine += lcovLineHit.get(line) > 0 ? 1 : 0;
-            curCovIncreLine += lcovLineHit.get(line) > 0 ? 1 : 0;
-          });
+        intersectArr.forEach((line: number) => {
+          covIncreLine += lcovLineHit.get(line) > 0 ? 1 : 0;
+          curCovIncreLine += lcovLineHit.get(line) > 0 ? 1 : 0;
+        });
 
-          totalIncreLine += intersectArr.length;
-          curTotalIncreLine += intersectArr.length;
+        totalIncreLine += intersectArr.length;
+        curTotalIncreLine += intersectArr.length;
 
-          if (
-            fileName.includes(lcovFilePath) &&
-            fileName.includes(diffFilePath) &&
-            intersectArr.length
-          ) {
-            this.computeCurIncrementRate(
-              fileName,
-              curCovIncreLine,
-              curTotalIncreLine,
-            );
-            this.renderFile(intersectArr, lcovLineHit);
-          }
+        if (
+          fileName.includes(fileName) &&
+          fileName.includes(diffFilePath) &&
+          intersectArr.length
+        ) {
+          this.computeCurIncrementRate(
+            fileName,
+            curCovIncreLine,
+            curTotalIncreLine,
+          );
+          this.renderFile(intersectArr, lcovLineHit);
         }
-      });
+      }
     });
 
     if (totalIncreLine) {
