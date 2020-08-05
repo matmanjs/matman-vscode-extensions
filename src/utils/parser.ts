@@ -132,7 +132,6 @@ export class Parser {
     this.resMap.$.linesValid = lineSum;
     this.resMap.$.linesCovered = lineCovered;
 
-    console.log(this.resMap);
     return this.resMap;
   }
 }

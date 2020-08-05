@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
+import {resolve} from 'path';
 import {exec} from 'child_process';
+import * as dayjs from 'dayjs';
+import {gitlogPromise} from 'gitlog';
 import gitDiffParser, {File} from 'gitdiff-parser';
 import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
@@ -34,7 +37,9 @@ export class IncrementCoverage extends Command {
     removeDecoration(editor, lineCount);
 
     // 获取lcov覆盖率数据
-    const data = (await this.getParseData(dwtConfigPath)) as Info;
+    const data = (await this.getParseData(
+      resolve(vscode.workspace.rootPath as string, dwtConfigPath),
+    )) as Info;
 
     // 判断是否选择了可以计算增量覆盖率的文件
     const flag = this.chooseCorrectFile(data, fileName);
@@ -43,10 +48,13 @@ export class IncrementCoverage extends Command {
       return;
     }
 
+    // 得到指定的 hash 值
+    const hash = await this.getGitHash();
+
     exec(
-      'git diff -U0',
+      `git diff ${hash}`,
       {cwd: vscode.workspace.rootPath},
-      (err: any, stdout: any, stderr: any) => {
+      (err, stdout) => {
         if (err) {
           console.log(err);
           return;
@@ -54,6 +62,7 @@ export class IncrementCoverage extends Command {
 
         // 获取git diff数据
         const diffData = gitDiffParser.parse(stdout);
+        console.log(diffData);
 
         // 判断是否选择了有变动代码的文件
         const diff = this.chooseDiffFile(diffData, fileName);
@@ -81,6 +90,25 @@ export class IncrementCoverage extends Command {
     }
 
     return !!flag;
+  }
+
+  // 得到 EPC 要求的 git hash
+  async getGitHash() {
+    const startDay = dayjs().startOf('month').format('YYYY-MM-DD');
+
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) {
+      showWarning('Please Open Folders');
+      return '';
+    }
+
+    const log = await gitlogPromise({
+      repo: workspaceFolders[0].uri.path,
+      since: startDay,
+      number: 10000,
+    });
+
+    return log[log.length - 1].hash;
   }
 
   // 判断选中的文件是否有增量代码
