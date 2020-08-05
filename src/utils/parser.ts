@@ -77,19 +77,19 @@ export class Parser {
 
   async run() {
     const promiseArray = [
+      // xml2js.parseStringPromise(
+      //   fs.readFileSync(
+      //     path.resolve(
+      //       this.path,
+      //       'unit_test_report/coverage/cobertura-coverage.xml',
+      //     ),
+      //   ),
+      // ),
       xml2js.parseStringPromise(
         fs.readFileSync(
           path.resolve(
             this.path,
-            'unit_test_report/coverage/cobertura-coverage.xml',
-          ),
-        ),
-      ),
-      xml2js.parseStringPromise(
-        fs.readFileSync(
-          path.resolve(
-            this.path,
-            'e2e_test_report/coverage/cobertura-coverage.xml',
+            'e2e/coverage/cobertura-coverage.xml',
           ),
         ),
       ),
