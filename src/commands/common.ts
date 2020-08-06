@@ -1,23 +1,9 @@
 import {commands, Disposable, ExtensionContext} from 'vscode';
 
-interface CommandConstructor {
-  new (): Command;
-}
-
-const commandsConstructor: CommandConstructor[] = [];
-
-export function collectCommands(): ClassDecorator {
-  return (target: any): void => {
-    commandsConstructor.push(target);
-  };
-}
-
-export function registerExtensionCommands(context: ExtensionContext) {
-  commandsConstructor.forEach(C => {
-    context.subscriptions.push(new C());
-  });
-}
-
+/**
+ * 命令的抽象类
+ * 要求实现 excute 抽象方法
+ */
 export abstract class Command implements Disposable {
   private _dispose: Disposable;
 
@@ -34,6 +20,38 @@ export abstract class Command implements Disposable {
   }
 
   abstract excute(...args: any[]): any;
+}
+
+/**
+ * Command 接口需要进行实现
+ */
+interface CommandConstructor {
+  new (): Command;
+}
+
+/**
+ * 需要注册的命令的列表
+ */
+const commandsConstructor: CommandConstructor[] = [];
+
+/**
+ * 收集命令
+ * 作为类装饰器使用
+ */
+export function collectCommands(): ClassDecorator {
+  return (target: any): void => {
+    commandsConstructor.push(target);
+  };
+}
+
+/**
+ * 注册插件
+ * @param context vscode 上下文
+ */
+export function registerExtensionCommands(context: ExtensionContext) {
+  commandsConstructor.forEach(C => {
+    context.subscriptions.push(new C());
+  });
 }
 
 export enum CommandNames {

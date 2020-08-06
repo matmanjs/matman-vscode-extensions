@@ -31,10 +31,6 @@
     ],
     "commands": [
       {
-        "command": "matman.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "matman.fullcoverage",
         "title": "Show FullCoverage"
       },
@@ -71,7 +67,6 @@
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
-    "glob": "^7.1.6",
     "mocha": "^7.1.2",
     "ts-loader": "^8.0.0",
     "typescript": "^3.8.3",
@@ -84,6 +79,7 @@
     "dayjs": "^1.8.32",
     "gitdiff-parser": "^0.2.2",
     "gitlog": "^4.0.0",
+    "glob": "^7.1.6",
     "lcov-parse": "^1.0.0",
     "xml2js": "^0.4.23"
   }

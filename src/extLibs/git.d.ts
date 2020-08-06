@@ -1,4 +1,4 @@
-import {CancellationToken, Event, SourceControlInputBox, Uri} from 'vscode';
+import {Event, Uri} from 'vscode';
 
 export interface Git {
   readonly path: string;

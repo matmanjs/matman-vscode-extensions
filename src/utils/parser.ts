@@ -87,10 +87,7 @@ export class Parser {
       // ),
       xml2js.parseStringPromise(
         fs.readFileSync(
-          path.resolve(
-            this.path,
-            'e2e/coverage/cobertura-coverage.xml',
-          ),
+          path.resolve(this.path, 'e2e/coverage/cobertura-coverage.xml'),
         ),
       ),
     ];
