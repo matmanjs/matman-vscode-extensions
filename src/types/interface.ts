@@ -4,14 +4,12 @@ export interface Total {
 }
 
 export interface DetailLines {
-  lineRate: 1;
-  lines: [
-    {
-      branch: string;
-      hits: number;
-      number: string;
-    },
-  ];
+  lineRate: number;
+  lines: {
+    branch: string;
+    hits: number;
+    number: string;
+  }[];
 }
 
 export type Info = Record<string | '$', Total | DetailLines>;

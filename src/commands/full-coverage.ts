@@ -4,7 +4,7 @@ import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
 import {setStatusBar} from '../statusBar';
 import {decoration, removeDecoration} from '../decoration';
-import {Parser} from '../utils/parser';
+import {LcovParser} from '../utils/lcovParser';
 import {Info, DetailLines, Total} from '../types/interface';
 
 @collectCommands()
@@ -29,9 +29,13 @@ export class FullCoverage extends Command {
 
     removeDecoration(editor, lineCount);
 
-    const data = (await this.getParseData(
-      resolve(vscode.workspace.rootPath as string, dwtConfigPath),
-    )) as Info;
+    const data = await this.getParseData(
+      resolve(
+        vscode.workspace.rootPath as string,
+        dwtConfigPath,
+        'e2e/coverage/lcov.info',
+      ),
+    );
 
     // 判断是否选择了可以渲染覆盖率的文件
     const flag = this.chooseCorrectFile(data, fileName);
@@ -49,8 +53,8 @@ export class FullCoverage extends Command {
   }
 
   // 获取解析好的数据
-  async getParseData(lcovPath: string) {
-    return await new Parser(lcovPath).run();
+  async getParseData(lcovPath: string): Promise<Info> {
+    return await new LcovParser(lcovPath).run();
   }
 
   // 判断是否选择了正确的文件进行渲染
