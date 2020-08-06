@@ -3,7 +3,7 @@ import {resolve} from 'path';
 import {exec} from 'child_process';
 import * as dayjs from 'dayjs';
 import {gitlogPromise} from 'gitlog';
-import gitDiffParser, {File} from 'gitdiff-parser';
+import {File} from 'gitdiff-parser';
 import {collectCommands, Command, CommandNames} from './common';
 import {showInformation, showWarning} from '../information';
 import {setStatusBar} from '../statusBar';
@@ -12,6 +12,8 @@ import {getFilePath} from '../utils';
 import {Parser} from '../utils/parser';
 import {Info, DetailLines} from '../types/interface';
 import {getOS} from '../utils/os';
+
+import gitdiffParser = require('gitdiff-parser');
 
 @collectCommands()
 export class IncrementCoverage extends Command {
@@ -51,29 +53,32 @@ export class IncrementCoverage extends Command {
     // 得到指定的 hash 值
     const hash = await this.getGitHash();
 
-    exec(
-      `git diff ${hash}`,
-      {cwd: vscode.workspace.rootPath},
-      (err, stdout) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
+    const res: string = await new Promise((resolve, reject) => {
+      exec(
+        `git diff ${hash}`,
+        {cwd: vscode.workspace.rootPath},
+        (err, stdout) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          }
+          resolve(stdout);
+        },
+      );
+    });
 
-        // 获取git diff数据
-        const diffData = gitDiffParser.parse(stdout);
-        console.log(diffData);
+    // 获取git diff数据
+    // @ts-ignore
+    const diffData: File[] = gitdiffParser.parse(res);
 
-        // 判断是否选择了有变动代码的文件
-        const diff = this.chooseDiffFile(diffData, fileName);
+    // 判断是否选择了有变动代码的文件
+    const diff = this.chooseDiffFile(diffData, fileName);
 
-        if (!diff) {
-          return;
-        }
+    if (!diff) {
+      return;
+    }
 
-        this.computeIncrementCovRate(data, diffData, fileName);
-      },
-    );
+    this.computeIncrementCovRate(data, diffData, fileName);
   }
 
   // 获取解析好的数据
@@ -145,7 +150,7 @@ export class IncrementCoverage extends Command {
     let totalIncreLine: number = 0;
     let covIncreLine: number = 0;
 
-    diffData.forEach((diffItem: File) => {
+    diffData.forEach(diffItem => {
       const diffFilePath: string = diffItem.newPath;
 
       if (fileName === diffFilePath) {
