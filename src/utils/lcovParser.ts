@@ -13,7 +13,6 @@ export class LcovParser {
   }
 
   async run(): Promise<Info> {
-    console.log(this.path);
     this.parserRes = await new Promise((resolve, reject) => {
       parse(this.path, (err: any, data: any) => {
         if (err) {

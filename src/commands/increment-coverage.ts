@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import {resolve} from 'path';
 import {exec} from 'child_process';
+import * as glob from 'glob';
 import * as dayjs from 'dayjs';
 import {gitlogPromise} from 'gitlog';
 import {File} from 'gitdiff-parser';
@@ -9,7 +10,7 @@ import {showInformation, showWarning} from '../information';
 import {setStatusBar} from '../statusBar';
 import {decoration, removeDecoration} from '../decoration';
 import {getFilePath} from '../utils';
-import {Parser} from '../utils/parser';
+import {LcovParser} from '../utils/lcovParser';
 import {Info, DetailLines} from '../types/interface';
 import {getOS} from '../utils/os';
 
@@ -17,36 +18,84 @@ import gitdiffParser = require('gitdiff-parser');
 
 @collectCommands()
 export class IncrementCoverage extends Command {
+  // 嗅探到的覆盖率文件列表
+  private lcovList: string[] = [];
+
+  // 用户选择的覆盖率文件路径
+  private selectPath = '';
+
+  // 格式化之后的覆盖率数据
+  private data: Info = {};
+
+  // DWT 产物文件夹
+  dwtConfigPath: string;
+
   constructor() {
     super(CommandNames.INCREMENT_COVERAGE);
-  }
 
-  async parseLocv() {
-    const dwtConfigPath = vscode.workspace
+    this.dwtConfigPath = vscode.workspace
       .getConfiguration()
       .get('dwt.coverage.lcovpath', vscode.ConfigurationTarget.Global)
       .toString();
 
+    this.dwtConfigPath = resolve(
+      vscode.workspace.rootPath as string,
+      this.dwtConfigPath,
+    );
+  }
+
+  /**
+   * 执行方法为了实现接口
+   */
+  async excute() {
+    this.getAllLcov();
+
+    if (this.lcovList.length === 0) {
+      showWarning('没有任何测试覆盖率文件, 请先运行测试');
+      return;
+    }
+
+    await this.showQuickPick();
+
+    this.parseLcov();
+  }
+
+  /**
+   * 得到所有的覆盖率文件路径
+   */
+  private getAllLcov() {
+    this.lcovList = glob.sync('./**/lcov.info', {
+      cwd: this.dwtConfigPath,
+    });
+  }
+
+  /**
+   * 展示提示面板
+   */
+  async showQuickPick() {
+    this.selectPath = (await vscode.window.showQuickPick(
+      this.lcovList,
+    )) as string;
+  }
+
+  /**
+   * 组装逻辑
+   */
+  private async parseLcov() {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
       return;
     }
 
-    const {fileName} = editor.document;
-    const {lineCount} = editor.document;
-
+    const {fileName, lineCount} = editor.document;
     removeDecoration(editor, lineCount);
 
     // 获取lcov覆盖率数据
-    const data = (await this.getParseData(
-      resolve(vscode.workspace.rootPath as string, dwtConfigPath),
-    )) as Info;
+    await this.getParseData(resolve(this.dwtConfigPath, this.selectPath));
 
     // 判断是否选择了可以计算增量覆盖率的文件
-    const flag = this.chooseCorrectFile(data, fileName);
-
-    if (!flag) {
+    if (!this.chooseCorrectFile(fileName)) {
       return;
     }
 
@@ -72,23 +121,27 @@ export class IncrementCoverage extends Command {
     const diffData: File[] = gitdiffParser.parse(res);
 
     // 判断是否选择了有变动代码的文件
-    const diff = this.chooseDiffFile(diffData, fileName);
-
-    if (!diff) {
+    if (!this.chooseDiffFile(diffData, fileName)) {
       return;
     }
 
-    this.computeIncrementCovRate(data, diffData, fileName);
+    this.computeIncrementCovRate(diffData, fileName);
   }
 
-  // 获取解析好的数据
-  async getParseData(lcovPath: string) {
-    return await new Parser(lcovPath).run();
+  /**
+   * 获取解析好的数据
+   * @param lcovPath 覆盖率文件路径
+   */
+  private async getParseData(lcovPath: string): Promise<void> {
+    this.data = await new LcovParser(lcovPath).run();
   }
 
-  // 判断是否选择了正确的文件进行渲染
-  chooseCorrectFile(data: Info, fileName: string): boolean {
-    const flag = data[fileName];
+  /**
+   * 判断是否选择了正确的文件进行渲染
+   * @param fileName
+   */
+  private chooseCorrectFile(fileName: string): boolean {
+    const flag = this.data[fileName];
 
     if (!flag) {
       showWarning('当前文件未被覆盖！');
@@ -97,8 +150,10 @@ export class IncrementCoverage extends Command {
     return !!flag;
   }
 
-  // 得到 EPC 要求的 git hash
-  async getGitHash() {
+  /**
+   * 得到 EPC 要求的 git hash
+   */
+  private async getGitHash() {
     const startDay = dayjs().startOf('month').format('YYYY-MM-DD');
 
     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -116,8 +171,12 @@ export class IncrementCoverage extends Command {
     return log[log.length - 1].hash;
   }
 
-  // 判断选中的文件是否有增量代码
-  chooseDiffFile(diffData: File[], fileName: string): boolean {
+  /**
+   * 判断选中的文件是否有增量代码
+   * @param diffData
+   * @param fileName
+   */
+  private chooseDiffFile(diffData: File[], fileName: string): boolean {
     let diff = false;
 
     diffData.forEach((diffItem: File) => {
@@ -141,20 +200,25 @@ export class IncrementCoverage extends Command {
     return diff;
   }
 
-  // 计算增量覆盖率
-  computeIncrementCovRate(
-    data: Info,
-    diffData: File[],
-    fileName: string,
-  ): void {
+  /**
+   * 计算增量覆盖率
+   * @param diffData
+   * @param fileName
+   */
+  private computeIncrementCovRate(diffData: File[], fileName: string): void {
     let totalIncreLine: number = 0;
     let covIncreLine: number = 0;
 
     diffData.forEach(diffItem => {
       const diffFilePath: string = diffItem.newPath;
 
-      if (fileName === diffFilePath) {
-        const info = data[fileName] as DetailLines;
+      if (
+        fileName
+          .toLocaleLowerCase()
+          .includes(diffItem.newPath.toLocaleLowerCase())
+      ) {
+        console.log(diffItem);
+        const info = this.data[fileName] as DetailLines;
 
         let curTotalIncreLine: number = 0;
         let curCovIncreLine: number = 0;
@@ -218,8 +282,13 @@ export class IncrementCoverage extends Command {
     }
   }
 
-  // 计算当前文件增量覆盖率
-  computeCurIncrementRate(
+  /**
+   * 计算当前文件增量覆盖率
+   * @param fileName
+   * @param curCovIncreLine
+   * @param curTotalIncreLine
+   */
+  private computeCurIncrementRate(
     fileName: string,
     curCovIncreLine: number,
     curTotalIncreLine: number,
@@ -232,15 +301,15 @@ export class IncrementCoverage extends Command {
     );
   }
 
-  // 渲染文件
-  renderFile(intersectArr: Array<number>, lcovLineHit: any) {
+  /**
+   * 渲染文件
+   * @param intersectArr
+   * @param lcovLineHit
+   */
+  private renderFile(intersectArr: Array<number>, lcovLineHit: any) {
     intersectArr.forEach((line: number) => {
       const hit = lcovLineHit.get(line);
       decoration(line - 1, hit);
     });
-  }
-
-  async excute() {
-    await this.parseLocv();
   }
 }

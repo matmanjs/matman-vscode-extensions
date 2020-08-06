@@ -20,7 +20,7 @@ export class FullCoverage extends Command {
   private data: Info = {};
 
   // DWT 产物文件夹
-  dwtConfigPath: string;
+  private dwtConfigPath: string;
 
   constructor() {
     super(CommandNames.FULL_COVERAGE);
@@ -43,6 +43,7 @@ export class FullCoverage extends Command {
     this.getAllLcov();
 
     if (this.lcovList.length === 0) {
+      showWarning('没有任何测试覆盖率文件, 请先运行测试');
       return;
     }
 
@@ -83,14 +84,10 @@ export class FullCoverage extends Command {
 
     removeDecoration(editor, lineCount);
 
-    this.data = await this.getParseData(
-      resolve(this.dwtConfigPath, this.selectPath),
-    );
+    await this.getParseData(resolve(this.dwtConfigPath, this.selectPath));
 
     // 判断是否选择了可以渲染覆盖率的文件
-    const flag = this.chooseCorrectFile(fileName);
-
-    if (!flag) {
+    if (!this.chooseCorrectFile(fileName)) {
       return;
     }
 
@@ -106,8 +103,8 @@ export class FullCoverage extends Command {
    * 获取覆盖率数据
    * @param lcovPath 覆盖率文件路径
    */
-  private async getParseData(lcovPath: string): Promise<Info> {
-    return await new LcovParser(lcovPath).run();
+  private async getParseData(lcovPath: string): Promise<void> {
+    this.data = await new LcovParser(lcovPath).run();
   }
 
   /**
