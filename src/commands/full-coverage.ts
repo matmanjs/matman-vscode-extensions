@@ -2,11 +2,10 @@ import * as vscode from 'vscode';
 import {resolve, relative} from 'path';
 import * as glob from 'glob';
 import {collectCommands, Command, CommandNames} from './common';
-import {showInformation, showWarning} from '../information';
-import {setStatusBar} from '../statusBar';
+import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
 import {LcovParser} from '../utils/lcovParser';
-import {Info, DetailLines, Total} from '../types/interface';
+import {Info, DetailLines, Total} from '../types';
 
 @collectCommands()
 export class FullCoverage extends Command {
@@ -43,7 +42,7 @@ export class FullCoverage extends Command {
     this.getAllLcov();
 
     if (this.lcovList.length === 0) {
-      showWarning('没有任何测试覆盖率文件, 请先运行测试');
+      Information.showWarning('没有任何测试覆盖率文件, 请先运行测试');
       return;
     }
 
@@ -116,7 +115,7 @@ export class FullCoverage extends Command {
     const flag = this.data[fileName];
 
     if (!flag) {
-      showWarning('当前文件未被覆盖！');
+      Information.showWarning('当前文件未被覆盖！');
     }
 
     return !!flag;
@@ -134,7 +133,7 @@ export class FullCoverage extends Command {
 
     // 若文件当前的行数小于lcov所能统计到的有覆盖率的最后一行
     if (lineCount && +info.lines[len - 1].number > lineCount) {
-      showWarning('覆盖率文件未更新，渲染测试用例行数有误');
+      Information.showWarning('覆盖率文件未更新，渲染测试用例行数有误');
       return;
     }
 
@@ -152,7 +151,7 @@ export class FullCoverage extends Command {
   private computeCurrentCovRate(fileName: string): void {
     const currentCovRate = (this.data[fileName] as DetailLines).lineRate * 100;
 
-    showInformation(
+    Information.showInformation(
       `${relative(
         vscode.workspace.rootPath as string,
         fileName,
@@ -168,6 +167,6 @@ export class FullCoverage extends Command {
     const $ = this.data.$ as Total;
     // 全量覆盖率
     const totalCovRate = ($.linesCovered / $.linesValid) * 100;
-    setStatusBar(`全量覆盖率为: ${totalCovRate.toFixed(2)}%`);
+    StatusBar.setStatusBar(`全量覆盖率为: ${totalCovRate.toFixed(2)}%`);
   }
 }

@@ -1,4 +1,4 @@
-import {Info, DetailLines} from '../types/interface';
+import {Info, DetailLines} from '../types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import parse = require('lcov-parse');

@@ -6,12 +6,11 @@ import * as dayjs from 'dayjs';
 import {gitlogPromise} from 'gitlog';
 import {File} from 'gitdiff-parser';
 import {collectCommands, Command, CommandNames} from './common';
-import {showInformation, showWarning} from '../information';
-import {setStatusBar} from '../statusBar';
+import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
 import {getFilePath} from '../utils';
 import {LcovParser} from '../utils/lcovParser';
-import {Info, DetailLines} from '../types/interface';
+import {Info, DetailLines} from '../types';
 import {getOS} from '../utils/os';
 
 import gitdiffParser = require('gitdiff-parser');
@@ -51,7 +50,7 @@ export class IncrementCoverage extends Command {
     this.getAllLcov();
 
     if (this.lcovList.length === 0) {
-      showWarning('没有任何测试覆盖率文件, 请先运行测试');
+      Information.showWarning('没有任何测试覆盖率文件, 请先运行测试');
       return;
     }
 
@@ -144,7 +143,7 @@ export class IncrementCoverage extends Command {
     const flag = this.data[fileName];
 
     if (!flag) {
-      showWarning('当前文件未被覆盖！');
+      Information.showWarning('当前文件未被覆盖！');
     }
 
     return !!flag;
@@ -158,7 +157,7 @@ export class IncrementCoverage extends Command {
 
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
-      showWarning('Please Open Folders');
+      Information.showWarning('Please Open Folders');
       return '';
     }
 
@@ -194,7 +193,7 @@ export class IncrementCoverage extends Command {
     });
 
     if (!diff) {
-      showWarning('该文件没有增量代码');
+      Information.showWarning('该文件没有增量代码');
     }
 
     return diff;
@@ -278,7 +277,7 @@ export class IncrementCoverage extends Command {
 
     if (totalIncreLine) {
       const totalIncreCovRate = (covIncreLine / totalIncreLine) * 100;
-      setStatusBar(`增量覆盖率为: ${totalIncreCovRate.toFixed(2)}%`);
+      StatusBar.setStatusBar(`增量覆盖率为: ${totalIncreCovRate.toFixed(2)}%`);
     }
   }
 
@@ -296,7 +295,7 @@ export class IncrementCoverage extends Command {
     const curIncreCovRate = (curCovIncreLine / curTotalIncreLine) * 100;
     const currentPath = getFilePath(fileName);
 
-    showInformation(
+    Information.showInformation(
       `${currentPath}的增量覆盖率为: ${curIncreCovRate.toFixed(2)}%`,
     );
   }
