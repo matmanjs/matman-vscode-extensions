@@ -127,7 +127,7 @@ export class IncrementCoverage extends Command {
       Information.showError(e);
     })) as FormatData | undefined;
 
-    this.data.files.forEach(item => {
+    this.data?.files.forEach(item => {
       if (item.name.toLowerCase().includes(fileName.toLowerCase())) {
         this.file = item;
       }
