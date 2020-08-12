@@ -119,10 +119,13 @@ export class IncrementCoverage extends Command {
     lcovPath: string,
     fileName: string,
   ): Promise<void> {
-    this.data = await getIncrease(lcovPath, {
+    this.data = (await getIncrease(lcovPath, {
       output: false,
       stream: {},
-    });
+      cwd: vscode.workspace.rootPath,
+    }).catch(e => {
+      Information.showError(e);
+    })) as FormatData | undefined;
 
     this.data.files.forEach(item => {
       if (item.name.toLowerCase().includes(fileName.toLowerCase())) {
