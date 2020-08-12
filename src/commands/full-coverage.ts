@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import {resolve, relative} from 'path';
 import * as glob from 'glob';
+import {resolve, relative} from 'path';
 import {collectCommands, Command, CommandNames} from './common';
 import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
