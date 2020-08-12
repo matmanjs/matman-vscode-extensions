@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import {getOS, getFileSeparator} from '../utils/os';
+import * as os from 'os';
+import * as path from 'path';
 
 // 获取文件路径
 export function getFilePath(fileName: string) {
@@ -17,14 +18,14 @@ export function getFilePath(fileName: string) {
 }
 
 export function getLcovPath(dwtConfigPath: string) {
-  const platform = getOS();
+  const platform = os.platform();
   let lcovPath: string = '';
 
-  if (platform === 'MAC OS') {
-    lcovPath = vscode.workspace.rootPath + getFileSeparator() + dwtConfigPath;
-  } else if (platform === 'Windows') {
+  if (platform === 'win32') {
     dwtConfigPath = dwtConfigPath.replace(/\//g, '\\');
-    lcovPath = vscode.workspace.rootPath + getFileSeparator() + dwtConfigPath;
+    lcovPath = path.join(vscode.workspace.rootPath as string, dwtConfigPath);
+  } else {
+    lcovPath = path.join(vscode.workspace.rootPath as string, dwtConfigPath);
   }
 
   return lcovPath;

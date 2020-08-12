@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import {resolve} from 'path';
-import {exec} from 'child_process';
+import * as os from 'os';
 import * as glob from 'glob';
 import * as dayjs from 'dayjs';
+import {resolve} from 'path';
+import {exec} from 'child_process';
 import {gitlogPromise} from 'gitlog';
 import {File} from 'gitdiff-parser';
 import {collectCommands, Command, CommandNames} from './common';
@@ -11,7 +12,6 @@ import {decoration, removeDecoration} from '../decoration';
 import {getFilePath} from '../utils';
 import {LcovParser} from '../utils/lcovParser';
 import {Info, DetailLines} from '../types';
-import {getOS} from '../utils/os';
 
 import gitdiffParser = require('gitdiff-parser');
 
@@ -179,8 +179,8 @@ export class IncrementCoverage extends Command {
     let diff = false;
 
     diffData.forEach((diffItem: File) => {
-      const platform = getOS();
-      if (platform === 'Windows') {
+      const platform = os.platform();
+      if (platform === 'win32') {
         diffItem.newPath = diffItem.newPath.replace(/\//g, '\\');
       }
       if (
