@@ -1,76 +1,76 @@
 {
-  "Matman String Type": {
-    "prefix": "matman-string-type",
+  "Matman Chai String Type": {
+    "prefix": "matman-chai-string-type",
     "body": "expect('matman').to.be.a('string');",
-    "description": "Matman 建议的 string 类型断言"
+    "description": "判断是否为 string 类型"
   },
-  "Matman String Equal": {
-    "prefix": "matman-string-equal",
+  "Matman Chai String Equal": {
+    "prefix": "matman-chai-string-equal",
     "body": "expect('matman').to.equal('matman');",
-    "description": "Matman 建议的 string 相等断言"
+    "description": "判断 string 是否相等"
   },
-  "Matman String Not Equal": {
-    "prefix": "matman-string-not-equal",
+  "Matman Chai String Not Equal": {
+    "prefix": "matman-chai-string-not-equal",
     "body": "expect('matmanmatman').to.not.equal('matman');",
-    "description": "Matman 建议的 string 不等断言"
+    "description": "判断 string 是否不相等"
   },
-  "Matman String Length": {
-    "prefix": "matman-string-length",
+  "Matman Chai String Length": {
+    "prefix": "matman-chai-string-length",
     "body": "expect('matman').to.have.lengthOf(6);",
-    "description": "Matman 建议的 string 长度断言"
+    "description": "判断 string 的长度"
   },
-  "Matman Number Type": {
-    "prefix": "matman-number-type",
+  "Matman Chai Number Type": {
+    "prefix": "matman-chai-number-type",
     "body": "expect(10086).to.be.a('number');",
-    "description": "Matman 建议的 number 类型断言"
+    "description": "判断是否为 number 类型"
   },
-  "Matman Number Equal": {
-    "prefix": "matman-number-equal",
+  "Matman Chai Number Equal": {
+    "prefix": "matman-chai-number-equal",
     "body": "expect(10086).to.equal(10086);",
-    "description": "Matman 建议的 number 相等断言"
+    "description": "判断 number 是否相等"
   },
-  "Matman Number Not Equal": {
-    "prefix": "matman-number-not-equal",
+  "Matman Chai Number Not Equal": {
+    "prefix": "matman-chai-number-not-equal",
     "body": "expect(20172).to.not.equal(10086);",
-    "description": "Matman 建议的 number 不等断言"
+    "description": "判断 number 是否不相等"
   },
-  "Matman Number Above": {
-    "prefix": "matman-number-above",
+  "Matman Chai Number Above": {
+    "prefix": "matman-chai-number-above",
     "body": "expect(10086).to.be.above(10085);",
-    "description": "Matman 建议的 number 大于断言"
+    "description": "判断 number 是否大于某个数"
   },
-  "Matman Number Least": {
-    "prefix": "matman-number-least",
+  "Matman Chai Number At Least": {
+    "prefix": "matman-chai-number-at-least",
     "body": "expect(10086).to.be.at.least(10086);",
-    "description": "Matman 建议的 number 小于断言"
+    "description": "判断 number 是否大于或等于某个数"
   },
-  "Matman Array Type": {
-    "prefix": "matman-array-type",
+  "Matman Chai Array Type": {
+    "prefix": "matman-chai-array-type",
     "body": "expect(['a', 'B', 10086]).to.be.a('array');",
-    "description": "Matman 建议的 array 类型断言"
+    "description": "判断是否为 array 类型"
   },
-  "Matman Array Eql": {
-    "prefix": "matman-array-eql",
+  "Matman Chai Array Eql": {
+    "prefix": "matman-chai-array-eql",
     "body": "expect(['a', 'B', 10086]).to.eql(['a', 'B', 10086]);",
-    "description": "Matman 建议的 array 相等断言"
+    "description": "判断 array 是否相等"
   },
-  "Matman Array Not Eql": {
-    "prefix": "matman-array-not-eql",
+  "Matman Chai Array Not Eql": {
+    "prefix": "matman-chai-array-not-eql",
     "body": "expect(['a', 'B', 10086, 'imNotExist']).to.not.eql(['a', 'B', 10086]);",
-    "description": "Matman 建议的 array 不等断言"
+    "description": "判断 array 是否不相等"
   },
-  "Matman Array Include": {
-    "prefix": "matman-array-include",
+  "Matman Chai Array Include": {
+    "prefix": "matman-chai-array-include",
     "body": "expect(['a', 'B', 10086]).to.include('a');",
-    "description": "Matman 建议的 array 包含断言"
+    "description": "判断 array 是否包含某个元素"
   },
-  "Matman Array Length": {
-    "prefix": "matman-string-equal",
+  "Matman Chai Array Length": {
+    "prefix": "matman-chai-array-length",
     "body": "expect(['a', 'B', 10086]).to.have.lengthOf(3);",
-    "description": "Matman 建议的 array 长度断言"
+    "description": "判断 array 的元素个数"
   },
-  "Matman Object Type": {
-    "prefix": "matman-object-type",
+  "Matman Chai Object Type": {
+    "prefix": "matman-chai-object-type",
     "body": [
       "expect({",
       "  name: 'matman',",
@@ -79,10 +79,10 @@
       "}).to.be.a('object');",
       ""
     ],
-    "description": "Matman 建议的 object 类型断言"
+    "description": "判断是否为 object 类型"
   },
-  "Matman Object Eql": {
-    "prefix": "matman-object-eql",
+  "Matman Chai Object Eql": {
+    "prefix": "matman-chai-object-eql",
     "body": [
       "expect({",
       "  name: 'matman',",
@@ -91,10 +91,10 @@
       "}).to.eql({ name: 'matman', age: 1, isPublished: true });",
       ""
     ],
-    "description": "Matman 建议的 object 相等断言"
+    "description": "判断 object 是否相等"
   },
-  "Matman Object Not Eql": {
-    "prefix": "matman-object-not-eql",
+  "Matman Chai Object Not Eql": {
+    "prefix": "matman-chai-object-not-eql",
     "body": [
       "expect({",
       "  name: 'matman',",
@@ -104,10 +104,10 @@
       "}).to.not.eql({ name: 'matman', age: 1, isPublished: true });",
       ""
     ],
-    "description": "Matman 建议的 object 不等断言"
+    "description": "判断 object 是否不相等"
   },
-  "Matman Object Have": {
-    "prefix": "matman-object-have",
+  "Matman Chai Object Have Property": {
+    "prefix": "matman-chai-object-have-property",
     "body": [
       "expect({",
       "  name: 'matman',",
@@ -116,10 +116,10 @@
       "}).to.have.property('name');",
       ""
     ],
-    "description": "Matman 建议的 object 属性包含断言"
+    "description": "判断 object 包含某个属性"
   },
-  "Matman String Have And Equal": {
-    "prefix": "matman-object-have-and-equal",
+  "Matman Chai String Have Property And Equal": {
+    "prefix": "matman-chai-object-have-and-equal",
     "body": [
       "expect({",
       "  name: 'matman',",
@@ -128,6 +128,6 @@
       "}).to.have.property('name', 'matman');",
       ""
     ],
-    "description": "Matman 建议的 object 属性包含并判断相等断言"
+    "description": "判断 object 包含某个属性且值等于指定值"
   }
 }
