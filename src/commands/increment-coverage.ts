@@ -5,6 +5,7 @@ import {getIncrease, FormatData} from 'incremental-coverage';
 import {collectCommands, Command, CommandNames} from './common';
 import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
+import {StateMachine} from '../utils/chooseState';
 
 @collectCommands()
 export class IncrementCoverage extends Command {
@@ -13,6 +14,9 @@ export class IncrementCoverage extends Command {
 
   // 用户选择的覆盖率文件路径
   private selectPath = '';
+
+  // 开始计算增量的日期
+  private time = '';
 
   // 格式化之后的覆盖率数据
   private data: FormatData | undefined;
@@ -79,9 +83,10 @@ export class IncrementCoverage extends Command {
    * 展示提示面板
    */
   async showQuickPick() {
-    this.selectPath = (await vscode.window.showQuickPick(
-      this.lcovList,
-    )) as string;
+    const {path, time} = await new StateMachine(this.lcovList).run();
+
+    this.selectPath = path;
+    this.time = time;
   }
 
   /**
@@ -122,6 +127,7 @@ export class IncrementCoverage extends Command {
     this.data = (await getIncrease(lcovPath, {
       output: false,
       stream: {},
+      since: this.time,
       cwd: vscode.workspace.rootPath,
     }).catch(e => {
       Information.showError(e);
