@@ -19,19 +19,19 @@
     "commands": [
       {
         "command": "matman.showfullcoverage",
-        "title": "Matman Show FullCoverage"
+        "title": "matman: Show FullCoverage（显示全量覆盖率）"
       },
       {
         "command": "matman.hidefullcoverage",
-        "title": "Matman Hide FullCoverage"
+        "title": "matman: Hide FullCoverage（隐藏全量覆盖率）"
       },
       {
         "command": "matman.showincrementcoverage",
-        "title": "Matman Show IncrementCoverage"
+        "title": "matman: Show IncrementCoverage（显示增量覆盖率）"
       },
       {
         "command": "matman.hideincrementcoverage",
-        "title": "Matman Hide IncrementCoverage"
+        "title": "matman: Hide IncrementCoverage（隐藏增量覆盖率）"
       }
     ],
     "snippets": [

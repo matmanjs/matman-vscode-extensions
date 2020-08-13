@@ -18,7 +18,7 @@ export class ShowIncrementCoverage extends Command {
     // 选择文件
     const list = State.getLcovlist().map(item => item.name);
     if (list.length === 0) {
-      Information.showWarning('没有任何测试覆盖率文件, 请先运行测试');
+      Information.showWarning('项目中未找到测试覆盖率 lcov.info 文件, 请先运行测试命令生成 lcov.info 文件！');
       return;
     }
 
