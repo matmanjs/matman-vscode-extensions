@@ -301,7 +301,6 @@
       "    searchKeyWorld: useJquery.getVal('#upquery'),",
       "    searchNumTips: useJquery.getText('#main .search-info .num-tips'),",
       "    searchResult,",
-      "",
       "  };",
       "}",
       "",
