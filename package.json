@@ -42,7 +42,7 @@
     "snippets": [
       {
         "language": "javascript",
-        "path": "./snippets/snippets.code-snippets"
+        "path": "./snippets/matman.code-snippets"
       },
       {
         "language": "javascript",
