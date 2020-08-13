@@ -3,3 +3,4 @@ export interface Coverage {
 }
 
 export * from './fullCoverage';
+export * from './incrementCoverage';

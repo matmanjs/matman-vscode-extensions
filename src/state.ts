@@ -74,6 +74,10 @@ export class State {
     return State.startTime;
   };
 
+  static setStartTime = (time: string) => {
+    State.startTime = time;
+  };
+
   static getLcovlist = () => {
     // 文件不存在或者 md5 数值不一致则重新加载
     for (const item of State.lcovlist) {

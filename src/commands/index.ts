@@ -1,3 +1,3 @@
 export * from './common';
-export * from './full-coverage';
-export * from './increment-coverage';
+export * from './fullCoverage';
+export * from './incrementCoverage';

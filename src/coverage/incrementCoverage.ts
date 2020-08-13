@@ -1,23 +1,12 @@
 import * as vscode from 'vscode';
-import * as glob from 'glob';
 import {resolve} from 'path';
 import {getIncrease, FormatData} from 'incremental-coverage';
-import {collectCommands, Command, CommandNames} from './common';
+import {Coverage} from './index';
+import {State} from '../state';
 import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
-import {StateMachine} from '../utils/chooseState';
 
-@collectCommands()
-export class IncrementCoverage extends Command {
-  // 嗅探到的覆盖率文件列表
-  private lcovList: string[] = [];
-
-  // 用户选择的覆盖率文件路径
-  private selectPath = '';
-
-  // 开始计算增量的日期
-  private time = '';
-
+export class IncrementCoverage implements Coverage {
   // 格式化之后的覆盖率数据
   private data: FormatData | undefined;
 
@@ -37,56 +26,11 @@ export class IncrementCoverage extends Command {
       }
     | undefined;
 
-  // DWT 产物文件夹
-  dwtConfigPath: string;
-
-  constructor() {
-    super(CommandNames.INCREMENT_COVERAGE);
-
-    this.dwtConfigPath = vscode.workspace
-      .getConfiguration()
-      .get('dwt.coverage.lcovpath', vscode.ConfigurationTarget.Global)
-      .toString();
-
-    this.dwtConfigPath = resolve(
-      vscode.workspace.rootPath as string,
-      this.dwtConfigPath,
-    );
-  }
-
   /**
    * 执行方法为了实现接口
    */
   async excute() {
-    this.getAllLcov();
-
-    if (this.lcovList.length === 0) {
-      Information.showWarning('没有任何测试覆盖率文件, 请先运行测试');
-      return;
-    }
-
-    await this.showQuickPick();
-
     this.parseLcov();
-  }
-
-  /**
-   * 得到所有的覆盖率文件路径
-   */
-  private getAllLcov() {
-    this.lcovList = glob.sync('./**/lcov.info', {
-      cwd: this.dwtConfigPath,
-    });
-  }
-
-  /**
-   * 展示提示面板
-   */
-  async showQuickPick() {
-    const {path, time} = await new StateMachine(this.lcovList).run();
-
-    this.selectPath = path;
-    this.time = time;
   }
 
   /**
@@ -103,10 +47,7 @@ export class IncrementCoverage extends Command {
     removeDecoration();
 
     // 获取lcov覆盖率数据
-    await this.getParseData(
-      resolve(this.dwtConfigPath, this.selectPath),
-      fileName,
-    );
+    await this.getParseData(State.getLcov().path, fileName);
 
     // 判断是否选择了可以计算增量覆盖率的文件
     if (!this.chooseCorrectFile()) {
@@ -127,7 +68,7 @@ export class IncrementCoverage extends Command {
     this.data = (await getIncrease(lcovPath, {
       output: false,
       stream: {},
-      since: this.time,
+      since: State.getStartTime(),
       cwd: vscode.workspace.rootPath,
     }).catch(e => {
       Information.showError(e);

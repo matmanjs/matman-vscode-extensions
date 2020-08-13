@@ -16,19 +16,6 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "configuration": [
-      {
-        "type": "object",
-        "title": "MatmanHelper",
-        "properties": {
-          "dwt.coverage.lcovpath": {
-            "type": "string",
-            "default": ".dwt_output",
-            "markdownDescription": "产物输出路径"
-          }
-        }
-      }
-    ],
     "commands": [
       {
         "command": "matman.showfullcoverage",
@@ -39,8 +26,12 @@
         "title": "Matman Hide FullCoverage"
       },
       {
-        "command": "matman.incrementcoverage",
-        "title": "Show IncrementCoverage"
+        "command": "matman.showincrementcoverage",
+        "title": "Matman Show IncrementCoverage"
+      },
+      {
+        "command": "matman.hideincrementcoverage",
+        "title": "Matman Hide IncrementCoverage"
       }
     ],
     "snippets": [
