@@ -134,6 +134,9 @@ export class IncrementCoverage extends Command {
     })) as FormatData | undefined;
 
     this.data?.files.forEach(item => {
+      const temp = resolve(vscode.workspace.rootPath as string, item.name);
+      item.name = temp;
+
       if (item.name.toLowerCase().includes(fileName.toLowerCase())) {
         this.file = item;
       }

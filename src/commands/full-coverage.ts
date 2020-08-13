@@ -104,6 +104,11 @@ export class FullCoverage extends Command {
    */
   private async getParseData(lcovPath: string): Promise<void> {
     this.data = await new LcovParser(lcovPath).run();
+
+    Object.keys(this.data).forEach(item => {
+      const temp = resolve(vscode.workspace.rootPath as string, item);
+      this.data[temp] = this.data[item];
+    });
   }
 
   /**
