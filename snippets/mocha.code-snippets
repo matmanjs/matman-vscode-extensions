@@ -1,0 +1,100 @@
+{
+  "Matman Mocha Describe": {
+    "prefix": ["m-mocha-describe"],
+    "body": [
+      "describe(\"${1:name}\", function () {",
+      "  before(function () {",
+      "    // runs once before the first test in this block",
+      "  });",
+      "",
+      "  after(function (done) {",
+      "    // runs once after the last test in this block",
+      "    done();",
+      "  });",
+      "",
+      "  beforeEach(function () {",
+      "    // runs before each test in this block",
+      "    return Promise.resolve();",
+      "  });",
+      "",
+      "  afterEach(async function () {",
+      "    // runs after each test in this block",
+      "    await Promise.resolve();",
+      "  });",
+      "",
+      "  it(\"${2:name2}\", function () {",
+      "    expect(data).to.equal(123);",
+      "  });",
+      "});",
+      ""
+    ],
+    "description": "mocha 新建 describe"
+  },
+  "Matman Mocha It": {
+    "prefix": ["m-mocha-it"],
+    "body": [
+      "it(\"${1:name}\", function () {",
+      "  expect(${2:data}).to.equal(123);",
+      "});"
+    ],
+    "description": "mocha 新建 it"
+  },
+  "Matman Mocha E2E TPL": {
+    "prefix": ["m-mocha-e2e-tpl"],
+    "body": [
+      "const { expect } = require(\"chai\");",
+      "",
+      "const checkPage = require(\"${1:matman-path}\");",
+      "",
+      "describe(\"${2:name}\", function () {",
+      "  this.timeout(30000);",
+      "",
+      "  let resultData;",
+      "",
+      "  before(async function () {",
+      "    resultData = await checkPage({",
+      "      show: false,",
+      "      doNotCloseBrowser: false,",
+      "      useRecorder: true,",
+      "    })",
+      "  });",
+      "",
+      "  describe(\"检查基本信息\", function () {",
+      "    let data;",
+      "",
+      "    before(function () {",
+      "      data = resultData.get(\"init\");",
+      "    });",
+      "",
+      "    it(\"userAgent应该正确\", function () {",
+      "      expect(data.userAgent).to.equal(",
+      "        \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36 mycustomua\"",
+      "      );",
+      "    });",
+      "  });",
+      "});",
+      ""
+    ],
+    "description": "mocha e2e 新建测试文件"
+  },
+  "Matman Mocha E2E Describe": {
+    "prefix": ["m-mocha-e2e-describe"],
+    "body": [
+      "describe(\"${1:name}\", function () {",
+      "  let data;",
+      "",
+      "  before(function () {",
+      "    data = resultData.get(\"${2:actionName}\");",
+      "  });",
+      "",
+      "  it(\"userAgent应该正确\", function () {",
+      "    expect(data.userAgent).to.equal(",
+      "      \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36 mycustomua\"",
+      "    );",
+      "  });",
+      "});",
+      ""
+    ],
+    "description": "mocha e2e 新建 describe"
+  }
+}

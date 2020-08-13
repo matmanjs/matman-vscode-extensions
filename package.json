@@ -47,6 +47,10 @@
       {
         "language": "javascript",
         "path": "./snippets/chai.code-snippets"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/mocha.code-snippets"
       }
     ]
   },
