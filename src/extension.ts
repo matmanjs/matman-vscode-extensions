@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {registerExtensionCommands} from './commands';
+import {registerExtensionEvevtListener} from './event';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -8,6 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "dwt" is now active!');
   registerExtensionCommands(context);
+  registerExtensionEvevtListener();
 }
 
 // this method is called when your extension is deactivated

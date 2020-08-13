@@ -31,8 +31,12 @@
     ],
     "commands": [
       {
-        "command": "matman.fullcoverage",
-        "title": "Show FullCoverage"
+        "command": "matman.showfullcoverage",
+        "title": "Matamn Show FullCoverage"
+      },
+      {
+        "command": "matman.hidefullcoverage",
+        "title": "Matman Hide FullCoverage"
       },
       {
         "command": "matman.incrementcoverage",
@@ -65,6 +69,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
+    "@types/md5": "^2.2.0",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
     "@types/vscode": "^1.46.0",
@@ -84,6 +89,7 @@
     "dayjs": "^1.8.32",
     "glob": "^7.1.6",
     "incremental-coverage": "^1.0.1",
+    "md5": "^2.3.0",
     "xml2js": "^0.4.23"
   },
   "repository": "https://github.com/matmanjs/vscode-plugin.git"
