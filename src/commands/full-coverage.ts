@@ -4,7 +4,7 @@ import {resolve, relative} from 'path';
 import {collectCommands, Command, CommandNames} from './common';
 import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
-import {LcovParser} from '../utils/lcovParser';
+import {LcovParser} from 'incremental-coverage';
 import {Info, DetailLines, Total} from '../types';
 
 @collectCommands()
