@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import * as glob from 'glob';
 import {resolve, relative} from 'path';
+import {LcovParser} from 'incremental-coverage';
 import {collectCommands, Command, CommandNames} from './common';
 import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
-import {LcovParser} from 'incremental-coverage';
 import {Info, DetailLines, Total} from '../types';
 
 @collectCommands()
