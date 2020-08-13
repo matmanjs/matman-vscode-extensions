@@ -49,7 +49,7 @@ export function decoration(line: number, hit: number): void {
   }
 }
 
-export function removeDecoration(editor: vscode.TextEditor, lineCount: number) {
+export function removeDecoration() {
   DecorationArr.forEach(obj => {
     obj.dispose();
   });

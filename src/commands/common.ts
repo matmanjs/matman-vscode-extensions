@@ -55,6 +55,8 @@ export function registerExtensionCommands(context: ExtensionContext) {
 }
 
 export enum CommandNames {
-  FULL_COVERAGE = 'matman.fullcoverage',
-  INCREMENT_COVERAGE = 'matman.incrementcoverage',
+  SHOW_FULL_COVERAGE = 'matman.showfullcoverage',
+  HIDE_FULL_COVERAGE = 'matman.hidefullcoverage',
+  SHOW_INCREMENT_COVERAGE = 'matman.showincrementcoverage',
+  HIDE_INCREMENT_COVERAGE = 'matman.hideincrementcoverage',
 }
