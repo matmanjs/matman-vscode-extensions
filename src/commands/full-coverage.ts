@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import {collectCommands, Command, CommandNames} from './common';
 import {State} from '../state';
+import {FullCoverage} from '../coverage';
 import {removeDecoration} from '../decoration';
+import {Information} from '../vscode';
 
 @collectCommands()
 export class ShowFullCoverage extends Command {
@@ -15,6 +17,11 @@ export class ShowFullCoverage extends Command {
   async excute() {
     // 选择文件
     const list = State.getLcovlist().map(item => item.name);
+    if (list.length === 0) {
+      Information.showWarning('没有任何测试覆盖率文件, 请先运行测试');
+      return;
+    }
+
     const res = (await vscode.window.showQuickPick(list, {
       placeHolder: '请选择覆盖率文件',
     })) as string;
@@ -23,6 +30,9 @@ export class ShowFullCoverage extends Command {
     State.setLcov(res);
     State.setFull(true);
     State.setIncrease(false);
+
+    // 执行渲染
+    new FullCoverage().excute();
   }
 }
 

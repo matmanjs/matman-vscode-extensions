@@ -32,7 +32,7 @@
     "commands": [
       {
         "command": "matman.showfullcoverage",
-        "title": "Matamn Show FullCoverage"
+        "title": "Matman Show FullCoverage"
       },
       {
         "command": "matman.hidefullcoverage",

@@ -100,7 +100,7 @@ export class IncrementCoverage extends Command {
     }
 
     const {fileName, lineCount} = editor.document;
-    removeDecoration(editor, lineCount);
+    removeDecoration();
 
     // 获取lcov覆盖率数据
     await this.getParseData(
