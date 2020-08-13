@@ -226,9 +226,9 @@
       "};",
       ""
     ],
-    "description": "matman helper 初始化"
+    "description": "matman helper 模板"
   },
-  "Matman Add Action": {
+  "Matman Case Module Add Action": {
     "prefix": ["m-matman-case-action"],
     "body": [
       "// TODO：注释一下这个步骤的目的是什么",
@@ -238,7 +238,7 @@
     ],
     "description": "matman case module 增加 addAction"
   },
-  "Matman Debug": {
+  "Matman Case Module Add Debug": {
     "prefix": ["m-matman-case-debug"],
     "body": [
       "// 调试专用：取消注释，执行 node xxx.js 即可",
@@ -256,5 +256,64 @@
       "//   });",
     ],
     "description": "matman case module 增加 debug 代码"
+  },
+  "Matman Crawler Init": {
+    "prefix": ["m-matman-crawler-init"],
+    "body": [
+      "const { useJquery } = require('web-crawl-util');",
+      "",
+      "/**",
+      " * 获得 webview 的信息",
+      " */",
+      "function getWebviewInfo() {",
+      "  return {",
+      "    title: document.title,",
+      "    width: window.innerWidth,",
+      "    height: window.innerHeight,",
+      "    userAgent: navigator.userAgent,",
+      "  };",
+      "}",
+      "",
+      "/**",
+      " * 获得搜索请求的相关信息",
+      " */",
+      "function getSearchReq() {",
+      "  return {",
+      "    searchBtnTxt: useJquery.getVal('#stb'),",
+      "    searchKeyWorld: useJquery.getVal('#query'),",
+      "  };",
+      "}",
+      "",
+      "/**",
+      " * 获得搜索结果的相关信息",
+      " */",
+      "function getSearchRsp() {",
+      "  const searchResult = [];",
+      "",
+      "  $('.pt,.vrTitle', '#main .results').each(function () {",
+      "    searchResult.push({",
+      "      title: useJquery.getText($(this)),",
+      "    });",
+      "  });",
+      "",
+      "  return {",
+      "    searchBtnTxt: useJquery.getVal('#searchBtn'),",
+      "    searchKeyWorld: useJquery.getVal('#upquery'),",
+      "    searchNumTips: useJquery.getText('#main .search-info .num-tips'),",
+      "    searchResult,",
+      "",
+      "  };",
+      "}",
+      "",
+      "module.exports = () => {",
+      "  return {",
+      "    webviewInfo: getWebviewInfo(),",
+      "    searchReq: getSearchReq(),",
+      "    searchRsp: getSearchRsp(),",
+      "  };",
+      "};",
+      ""
+    ],
+    "description": "matman crawler 爬虫脚本模板"
   }
 }
