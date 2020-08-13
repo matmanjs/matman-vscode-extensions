@@ -71,63 +71,51 @@
   },
   "Matman Chai Object Type": {
     "prefix": "matman-chai-object-type",
-    "body": [
-      "expect({",
-      "  name: 'matman',",
-      "  age: 1,",
-      "  isPublished: true,",
-      "}).to.be.a('object');",
-      ""
-    ],
+    "body": "expect({ name: 'matman', age: 1, isPublished: true }).to.be.a('object');",
     "description": "判断是否为 object 类型"
   },
   "Matman Chai Object Eql": {
     "prefix": "matman-chai-object-eql",
-    "body": [
-      "expect({",
-      "  name: 'matman',",
-      "  age: 1,",
-      "  isPublished: true,",
-      "}).to.eql({ name: 'matman', age: 1, isPublished: true });",
-      ""
-    ],
+    "body": "expect({ name: 'matman', age: 1, isPublished: true }).to.eql({ name: 'matman', age: 1, isPublished: true });",
     "description": "判断 object 是否相等"
   },
   "Matman Chai Object Not Eql": {
     "prefix": "matman-chai-object-not-eql",
-    "body": [
-      "expect({",
-      "  name: 'matman',",
-      "  age: 1,",
-      "  isPublished: true,",
-      "  imNotExist: true,",
-      "}).to.not.eql({ name: 'matman', age: 1, isPublished: true });",
-      ""
-    ],
+    "body": "expect({ name: 'matman', age: 1, isPublished: true, imNotExist: true }).to.not.eql({ name: 'matman', age: 1, isPublished: true });",
     "description": "判断 object 是否不相等"
   },
   "Matman Chai Object Have Property": {
     "prefix": "matman-chai-object-have-property",
-    "body": [
-      "expect({",
-      "  name: 'matman',",
-      "  age: 1,",
-      "  isPublished: true,",
-      "}).to.have.property('name');",
-      ""
-    ],
+    "body": "expect({ name: 'matman', age: 1, isPublished: true }).to.have.property('name');",
     "description": "判断 object 包含某个属性"
   },
   "Matman Chai String Have Property And Equal": {
     "prefix": "matman-chai-object-have-and-equal",
-    "body": [
-      "expect({",
-      "  name: 'matman',",
-      "  age: 1,",
-      "  isPublished: true,",
-      "}).to.have.property('name', 'matman');",
-      ""
-    ],
+    "body": "expect({ name: 'matman', age: 1, isPublished: true }).to.have.property('name', 'matman');",
     "description": "判断 object 包含某个属性且值等于指定值"
+  },
+  "Matman Chai Is undefined": {
+    "prefix": "matman-chai-is-undefined",
+    "body": "expect(undefined).to.be.undefined;",
+    "description": "判断是否为 undefined"
+  },
+  "Matman Chai Is null": {
+    "prefix": "matman-chai-is-null",
+    "body": "expect(null).to.be.null;",
+    "description": "判断是否为 null"
+  },
+  "Matman Chai Is true": {
+    "prefix": "matman-chai-is-true",
+    "body": "expect(true).to.be.true;",
+    "description": "判断是否为 true"
+  },
+  "Matman Chai Is empty": {
+    "prefix": "matman-chai-is-empty",
+    "body":[
+      "expect([]).to.be.empty;",
+      "expect('').to.be.empty;",
+      "expect({}).to.be.empty;",
+    ],
+    "description": "判断是否为 empty（[]、''、{}都算 empty）"
   }
 }
