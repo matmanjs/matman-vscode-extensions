@@ -32,8 +32,21 @@
       {
         "command": "matman.hideincrementcoverage",
         "title": "matman: Hide IncrementCoverage（隐藏增量覆盖率）"
+      },
+      {
+        "command": "matman.execJavascript",
+        "title": "执行当前 JavaScript 文件"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "group": "commands",
+          "command": "matman.execJavascript",
+          "when": "resourceLangId == javascript"
+        }
+      ]
+    },
     "snippets": [
       {
         "language": "javascript",

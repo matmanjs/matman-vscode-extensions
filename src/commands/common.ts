@@ -59,4 +59,5 @@ export enum CommandNames {
   HIDE_FULL_COVERAGE = 'matman.hidefullcoverage',
   SHOW_INCREMENT_COVERAGE = 'matman.showincrementcoverage',
   HIDE_INCREMENT_COVERAGE = 'matman.hideincrementcoverage',
+  EXEC_JAVASCRIPT = 'matman.execJavascript',
 }
