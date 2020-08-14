@@ -14,15 +14,13 @@ export class IncrementCoverage implements Coverage {
   private file:
     | {
         name: string;
-        increLine?: number | undefined;
-        covLine?: number | undefined;
-        increRate?: string | undefined;
-        detail?:
-          | {
-              number: number;
-              hits: number;
-            }[]
-          | undefined;
+        increLine?: number;
+        covLine?: number;
+        increRate?: string;
+        detail?: {
+          number: number;
+          hits: number;
+        }[];
       }
     | undefined;
 
@@ -43,7 +41,7 @@ export class IncrementCoverage implements Coverage {
       return;
     }
 
-    const {fileName, lineCount} = editor.document;
+    const {fileName} = editor.document;
     removeDecoration();
 
     // 获取lcov覆盖率数据

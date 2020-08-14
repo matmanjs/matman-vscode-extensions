@@ -1,15 +1,14 @@
 import * as vscode from 'vscode';
 import {resolve, relative} from 'path';
-import {LcovParser} from 'incremental-coverage';
+import {LcovParser, Locv} from 'incremental-coverage';
 import {Coverage} from './index';
 import {State} from '../state';
 import {Information, StatusBar} from '../vscode';
 import {decoration, removeDecoration} from '../decoration';
-import {Info, DetailLines, Total} from '../types';
 
 export class FullCoverage implements Coverage {
   // 格式化之后的覆盖率数据
-  private data: Info = {};
+  private data: Locv = {detail: {}};
 
   /**
    * 执行方法为了实现接口
@@ -54,9 +53,9 @@ export class FullCoverage implements Coverage {
   private async getParseData(lcovPath: string): Promise<void> {
     this.data = await new LcovParser(lcovPath).run();
 
-    Object.keys(this.data).forEach(item => {
+    Object.keys(this.data.detail).forEach(item => {
       const temp = resolve(vscode.workspace.rootPath as string, item);
-      this.data[temp] = this.data[item];
+      this.data.detail[temp] = this.data.detail[item];
     });
   }
 
@@ -66,7 +65,7 @@ export class FullCoverage implements Coverage {
    * @param fileName
    */
   private chooseCorrectFile(fileName: string): boolean {
-    const flag = this.data[fileName];
+    const flag = this.data.detail[fileName];
 
     if (!flag) {
       Information.showWarning('当前文件未被覆盖！');
@@ -82,7 +81,7 @@ export class FullCoverage implements Coverage {
    * @param lineCount 文件行数
    */
   private renderFile(fileName: string, lineCount: number): any {
-    const info = this.data[fileName] as DetailLines;
+    const info = this.data.detail[fileName];
     const len = info.lines.length;
 
     // 若文件当前的行数小于lcov所能统计到的有覆盖率的最后一行
@@ -103,7 +102,7 @@ export class FullCoverage implements Coverage {
    * @param fileName 文件名
    */
   private computeCurrentCovRate(fileName: string): void {
-    const currentCovRate = (this.data[fileName] as DetailLines).lineRate * 100;
+    const currentCovRate = this.data.detail[fileName].lineRate * 100;
 
     Information.showInformation(
       `${relative(
@@ -118,9 +117,9 @@ export class FullCoverage implements Coverage {
    * @param data 覆盖率数据
    */
   private computeTotalCovRate(): void {
-    const $ = this.data.$ as Total;
+    const $ = this.data.$;
     // 全量覆盖率
-    const totalCovRate = ($.linesCovered / $.linesValid) * 100;
+    const totalCovRate = (($?.linesCovered || 0) / ($?.linesValid || 1)) * 100;
     StatusBar.setStatusBar(`全量覆盖率为: ${totalCovRate.toFixed(2)}%`);
   }
 }
