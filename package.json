@@ -35,7 +35,7 @@
       },
       {
         "command": "matman.execJavascript",
-        "title": "执行当前 JavaScript 文件"
+        "title": "执行当前 .js .ts 文件"
       }
     ],
     "menus": {
@@ -43,7 +43,7 @@
         {
           "group": "commands",
           "command": "matman.execJavascript",
-          "when": "resourceLangId == javascript"
+          "when": "resourceLangId == javascript || resourceLangId == typescript"
         }
       ]
     },

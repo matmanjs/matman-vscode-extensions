@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import {collectCommands, Command, CommandNames} from './common';
-import {worker} from 'cluster';
 
 @collectCommands()
 export class ExecJavascript extends Command {
@@ -19,13 +18,18 @@ export class ExecJavascript extends Command {
       return;
     }
 
-    const {fileName} = editor.document;
+    const {fileName, languageId} = editor.document;
     let terminal = vscode.window.activeTerminal;
     if (!terminal) {
       terminal = vscode.window.createTerminal();
     }
 
     terminal.show();
-    terminal.sendText(`node ${fileName}`, true);
+    terminal.sendText(
+      languageId === 'javascript'
+        ? `node ${fileName}`
+        : `npm install typescript && npx ts-node ${fileName} --ugv`,
+      true,
+    );
   }
 }
