@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {resolve, relative} from 'path';
-import {LcovParser, Locv} from 'incremental-coverage';
+import {LcovParser, Lcov} from 'incremental-coverage';
 import {Coverage} from './index';
 import {State} from '../state';
 import {Information, StatusBar} from '../vscode';
@@ -8,7 +8,7 @@ import {decoration, removeDecoration} from '../decoration';
 
 export class FullCoverage implements Coverage {
   // 格式化之后的覆盖率数据
-  private data: Locv = {detail: {}};
+  private data: Lcov = {detail: {}};
 
   /**
    * 执行方法为了实现接口
