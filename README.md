@@ -62,7 +62,7 @@ $ npm run package
 2. 打开 VSCode，点击左边栏 `extension` 项，点击边栏右上角三点，选择 `Install from VSIX`，选择刚才编译好的 `matman-0.2.1.vsix` 文件。
 3. 重新启动 VSCode 后，若 extension 中有 matman 项，则说明安装成功。
 
-![image-20200817200814100](http://picture.wghtstudio.cn/image-20200817200814100.png)
+![image-20200817200814100](assets/image-20200817200814100.png)
 
 ## 使用插件
 
@@ -70,7 +70,7 @@ $ npm run package
 
 点击 `command(ctrl)+shift+P` 打开 VSCode 的命令面板，输入 matman，可以看到下面 4 条命令：
 
-![image-20200817202121545](http://picture.wghtstudio.cn/image-20200817202121545.png)
+![image-20200817202121545](assets/image-20200817202121545.png)
 
 选择对应的命令即可通过高亮某些行的方式，展现代码覆盖率
 
@@ -79,13 +79,13 @@ $ npm run package
 
 运行之后当你打开文件时，会呈现覆盖率信息：
 
-![image-20200817212414868](http://picture.wghtstudio.cn/image-20200817212414868.png)
+![image-20200817212414868](assets/image-20200817212414868.png)
 
 ### 代码运行
 
 在 TS 或者 JS 文件中点击右键，可以看到：
 
-<img src="http://picture.wghtstudio.cn/image-20200817212531131.png" alt="image-20200817212531131" style="zoom:33%;" />
+<img src="assets/image-20200817212531131.png" alt="image-20200817212531131" style="zoom:33%;" />
 
 可以方便的执行当前文件。
 
