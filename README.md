@@ -18,32 +18,7 @@
 
 ## Known Issues
 
-暂时没有已知问题，欢迎大家提交 [issue](https://github.com/matmanjs/vscode-plugin/issues/new)
-
-## Release Notes
-
-### 0.3.0
-
-- 可以多选覆盖率文件进行合并显示覆盖率
-
-### 0.2.1
-
-- 增加一键执行功能
-
-
-### 0.2.0
-
-- 代码片段补全增加 Mocha、Chai 的片段
-- 完成增量覆盖率的染色
-- 更换渲染逻辑，无需频繁命令启动
-
-### 0.0.2
-
-- 提供覆盖率测试染色
-
-### 0.0.1
-
-- 提供代码补全功能
+暂时没有已知问题，欢迎大家提交 [issue](https://github.com/matmanjs/vscode-plugin/issues/new)。
 
 ***
 

@@ -1,9 +1,69 @@
-# Change Log
+# Changelog
+此项目的所有显著性更改都将记录在本文件中。
 
-All notable changes to the "matman" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+格式基于 [keepachangelog](https://keepachangelog.com/en/1.0.0/)，并且该项目遵循 [语义版本控制](https://semver.org/spec/v2.0.0.html)。
 
 ## [Unreleased]
 
-- Initial release
+## [0.3.2] - 2020-08-19
+
+### Added
+
+- 添加更新日志
+- 更新 README
+
+### Changed
+
+- 更换图标
+
+## [0.3.1] - 2020-08-19
+
+### Changed
+
+- 更换图标
+
+## [0.3.0] - 2020-08-19
+
+### Changed
+
+- 可以多选覆盖率文件进行合并显示覆盖率
+
+## [0.2.1] - 2020-08-17
+
+### Added
+
+- 增加一键执行功能
+
+## [0.2.0] - 2020-08-04
+
+### Added
+
+- 代码片段补全增加 Mocha、Chai 的片段
+
+- 添加多个覆盖率文件选择功能
+
+### Changed
+
+- 更换渲染逻辑，无需频繁命令启动
+
+### Fixed
+
+- 修复增量染色错误
+
+## [0.1.0] - 2020-07-14
+
+### Added
+
+- 提供增量覆盖率染色
+
+## [0.0.2] - 2020-07-12
+
+### Added
+
+- 提供全量覆盖率测试染色
+
+## [0.0.1] - 2020-07-04
+
+### Added
+
+- 提供代码补全功能
