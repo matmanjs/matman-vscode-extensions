@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {resolve, relative} from 'path';
-import {LcovParser, Lcov} from 'incremental-coverage';
+import {Lcov, lcovConcat} from 'incremental-coverage';
 import {Coverage} from './index';
 import {State} from '../state';
 import {Information, StatusBar} from '../vscode';
@@ -31,7 +31,7 @@ export class FullCoverage implements Coverage {
 
     removeDecoration();
 
-    await this.getParseData(State.getLcov().path);
+    await this.getParseData(State.getLcov());
 
     // 判断是否选择了可以渲染覆盖率的文件
     if (!this.chooseCorrectFile(fileName)) {
@@ -50,8 +50,8 @@ export class FullCoverage implements Coverage {
    * 获取覆盖率数据
    * @param lcovPath 覆盖率文件路径
    */
-  private async getParseData(lcovPath: string): Promise<void> {
-    this.data = await new LcovParser(lcovPath).run();
+  private async getParseData(lcovPath: string[]): Promise<void> {
+    this.data = await lcovConcat(...lcovPath);
 
     Object.keys(this.data.detail).forEach(item => {
       const temp = resolve(vscode.workspace.rootPath as string, item);

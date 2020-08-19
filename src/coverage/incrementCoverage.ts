@@ -45,7 +45,7 @@ export class IncrementCoverage implements Coverage {
     removeDecoration();
 
     // 获取lcov覆盖率数据
-    await this.getParseData(State.getLcov().path, fileName);
+    await this.getParseData(State.getLcov()[0], fileName);
 
     // 判断是否选择了可以计算增量覆盖率的文件
     if (!this.chooseCorrectFile()) {
