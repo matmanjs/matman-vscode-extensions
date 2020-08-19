@@ -93,7 +93,7 @@
   "dependencies": {
     "dayjs": "^1.8.32",
     "glob": "^7.1.6",
-    "incremental-coverage": "^2.2.1",
+    "incremental-coverage": "^2.3.1",
     "md5": "^2.3.0",
     "xml2js": "^0.4.23"
   },

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {resolve} from 'path';
-import {getIncrease, FormatData} from 'incremental-coverage';
+import {getIncrease, IncresseResult} from 'incremental-coverage';
 import {Coverage} from './index';
 import {State} from '../state';
 import {Information, StatusBar} from '../vscode';
@@ -8,7 +8,7 @@ import {decoration, removeDecoration} from '../decoration';
 
 export class IncrementCoverage implements Coverage {
   // 格式化之后的覆盖率数据
-  private data: FormatData | undefined;
+  private data: IncresseResult | undefined;
 
   // 选择的文件的信息
   private file:
@@ -45,7 +45,7 @@ export class IncrementCoverage implements Coverage {
     removeDecoration();
 
     // 获取lcov覆盖率数据
-    await this.getParseData(State.getLcov().path, fileName);
+    await this.getParseData(State.getLcov()[0], fileName);
 
     // 判断是否选择了可以计算增量覆盖率的文件
     if (!this.chooseCorrectFile()) {
@@ -63,16 +63,14 @@ export class IncrementCoverage implements Coverage {
     lcovPath: string,
     fileName: string,
   ): Promise<void> {
-    this.data = (await getIncrease(lcovPath, {
+    this.data = await getIncrease(lcovPath, {
       output: false,
       stream: {},
       since: State.getStartTime(),
       cwd: vscode.workspace.rootPath,
-    }).catch(e => {
-      Information.showError(e);
-    })) as FormatData | undefined;
+    });
 
-    this.data?.files.forEach(item => {
+    this.data?.data.files.forEach(item => {
       const temp = resolve(vscode.workspace.rootPath as string, item.name);
       item.name = temp;
 
@@ -108,8 +106,8 @@ export class IncrementCoverage implements Coverage {
       this.renderFile();
     }
 
-    if (this.data?.total.increLine) {
-      StatusBar.setStatusBar(`增量覆盖率为: ${this.data.total.increRate}`);
+    if (this.data?.data.total.increLine) {
+      StatusBar.setStatusBar(`增量覆盖率为: ${this.data.data.total.increRate}`);
     }
   }
 

@@ -52,7 +52,7 @@ export class State {
   private static lcovlist = State.initLcovlist();
 
   // 当前选择的文件
-  private static lcovIndex = 0;
+  private static lcovIndex: number[] = [];
 
   static getFull = () => {
     return State.full;
@@ -94,10 +94,14 @@ export class State {
   };
 
   static getLcov = () => {
-    return State.lcovlist[State.lcovIndex];
+    return State.lcovIndex.map(index => {
+      return State.lcovlist[index].path;
+    });
   };
 
-  static setLcov = (name: string) => {
-    State.lcovIndex = State.lcovlist.findIndex(item => item.name === name);
+  static setLcov = (nameArray: string[]) => {
+    State.lcovIndex = nameArray.map(name => {
+      return State.lcovlist.findIndex(item => item.name === name);
+    });
   };
 }

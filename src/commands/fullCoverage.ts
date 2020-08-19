@@ -18,13 +18,16 @@ export class ShowFullCoverage extends Command {
     // 选择文件
     const list = State.getLcovlist().map(item => item.name);
     if (list.length === 0) {
-      Information.showWarning('项目中未找到测试覆盖率 lcov.info 文件, 请先运行测试命令生成 lcov.info 文件！');
+      Information.showWarning(
+        '项目中未找到测试覆盖率 lcov.info 文件, 请先运行测试命令生成 lcov.info 文件！',
+      );
       return;
     }
 
     const res = (await vscode.window.showQuickPick(list, {
       placeHolder: '请选择覆盖率文件',
-    })) as string;
+      canPickMany: true,
+    })) as string[];
 
     // 设置状态
     State.setLcov(res);

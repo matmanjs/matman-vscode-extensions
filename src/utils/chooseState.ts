@@ -18,7 +18,7 @@ export class StateMachine {
   state: State;
   time: string;
   lcovList: string[];
-  select: string = '';
+  select: string[] = [];
 
   constructor(lcovList: string[]) {
     this.lcovList = lcovList;
@@ -50,20 +50,28 @@ export class StateMachine {
   }
 
   private async init() {
-    this.select = (await vscode.window.showQuickPick(this.lcovList)) as string;
+    this.select = (await vscode.window.showQuickPick(this.lcovList, {
+      placeHolder: '请选择覆盖率文件',
+      canPickMany: true,
+    })) as string[];
     this.state = State.config;
   }
 
   private async config() {
     // https://code.visualstudio.com/api/references/vscode-api#QuickPickItem
-    const items: vscode.QuickPickItem[] = [{
-      label: IncrementCoverageTypes.CURRENT_MONTH, 
-      detail: '计算法方式：以当月1号的第一个 commit 记录为起始点，计算增量覆盖率',
-      picked: true
-    },{
-      label: IncrementCoverageTypes.CUSTOM_DATE, 
-      detail: '计算法方式：以指定日期的第一个 commit 记录为起始点，计算增量覆盖率'
-    }];
+    const items: vscode.QuickPickItem[] = [
+      {
+        label: IncrementCoverageTypes.CURRENT_MONTH,
+        detail:
+          '计算法方式：以当月1号的第一个 commit 记录为起始点，计算增量覆盖率',
+        picked: true,
+      },
+      {
+        label: IncrementCoverageTypes.CUSTOM_DATE,
+        detail:
+          '计算法方式：以指定日期的第一个 commit 记录为起始点，计算增量覆盖率',
+      },
+    ];
 
     // https://code.visualstudio.com/api/references/vscode-api
     const select = (await vscode.window.showQuickPick(items, {
