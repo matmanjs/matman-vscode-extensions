@@ -1,6 +1,6 @@
 # matman for web 端对端测试（E2E，End-to-End Testing）
 
-本插件为基于 [matman](https://matmanjs.github.io/matman/) 做 web 端对端测试（E2E，End-to-End Testing）提供了一些工具支持，包含：
+本插件为基于 [matman](https://matmanjs.github.io/matman/) 做 web 端对端测试（E2E，End-to-End Testing）的辅助插件，功能包含：
 
 - 代码片段补齐(code snippets)，支持 `mocha`、`chai`、`matman`、`mockstar` 等框架常见场景
 - 代码覆盖率染色查看，支持合并计算多个 `lcov.info` 文件的全量覆盖率和增量覆盖率
