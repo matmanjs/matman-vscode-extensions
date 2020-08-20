@@ -172,7 +172,7 @@
       "//   .catch(function (error) {",
       "//     console.error('failed:', error);",
       "//   });",
-      "",
+      ""
     ],
     "description": "matman case modules 模板 v2，使用 helpers 工厂模式创建 PageDriver，使用 env 定义常量"
   },
@@ -253,7 +253,7 @@
       "//   })",
       "//   .catch(function (error) {",
       "//     console.error('failed:', error);",
-      "//   });",
+      "//   });"
     ],
     "description": "matman case module 增加 debug 代码"
   },
