@@ -3,19 +3,19 @@ import * as vscode from 'vscode';
 const commands = [
   {
     command: 'matman.showfullcoverage',
-    title: 'matman: Show FullCoverage（显示全量覆盖率）',
+    title: '显示全量覆盖率',
   },
   {
     command: 'matman.hidefullcoverage',
-    title: 'matman: Hide FullCoverage（隐藏全量覆盖率）',
+    title: '隐藏全量覆盖率',
   },
   {
     command: 'matman.showincrementcoverage',
-    title: 'matman: Show IncrementCoverage（显示增量覆盖率）',
+    title: '显示增量覆盖率',
   },
   {
     command: 'matman.hideincrementcoverage',
-    title: 'matman: Hide IncrementCoverage（隐藏增量覆盖率）',
+    title: '隐藏增量覆盖率',
   },
 ];
 
