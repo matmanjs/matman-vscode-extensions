@@ -1,0 +1,13 @@
+{
+  "Matman DWT  TestBase Annotation": {
+    "prefix": ["m-dwt-testbase"],
+    "body": [
+      "/**",
+      " * @author ${1:author}",
+      " * @priority ${2:P0/P1/P2}",
+      " * @casetype ${3:unit/e2e/integration}",
+      " */"
+    ],
+    "description": "DWT testBase 注解"
+  }
+}
