@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import {registerExtensionCommands} from './commands';
 import {registerExtensionEvevtListener} from './event';
+import {registerExtensionTreeView} from './treeView';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -9,6 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   registerExtensionCommands(context);
   registerExtensionEvevtListener();
+  registerExtensionTreeView();
 }
 
 // this method is called when your extension is deactivated

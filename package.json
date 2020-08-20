@@ -75,7 +75,15 @@
         "language": "javascript",
         "path": "./snippets/dwt.code-snippets"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "matman.treeView",
+          "name": "matman 覆盖率"
+        }
+      ]
+    }
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
