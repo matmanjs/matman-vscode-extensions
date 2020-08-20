@@ -2,11 +2,11 @@
   "name": "matman",
   "displayName": "matman",
   "description": "matman 自动化测试辅助插件",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "engines": {
     "vscode": "^1.46.0"
   },
-  "publisher": "wangjq4214",
+  "publisher": "matmanjs",
   "categories": [
     "Other",
     "Snippets"
