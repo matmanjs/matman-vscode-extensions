@@ -16,6 +16,16 @@
   ],
   "icon": "assets/icon.png",
   "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "webpack --mode production",
+    "compile": "webpack --mode none",
+    "lint": "eslint src --ext ts",
+    "watch": "webpack --mode none --watch",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
   "contributes": {
     "commands": [
       {
@@ -66,15 +76,6 @@
         "path": "./snippets/dwt.code-snippets"
       }
     ]
-  },
-  "scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "compile": "webpack --mode none",
-    "lint": "eslint src --ext ts",
-    "watch": "webpack --mode none --watch",
-    "pretest": "npm run compile && npm run lint",
-    "test": "node ./out/test/runTest.js",
-    "package": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
