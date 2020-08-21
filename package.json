@@ -75,6 +75,29 @@
         "language": "javascript",
         "path": "./snippets/dwt.code-snippets"
       }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "matman",
+          "title": "matman",
+          "icon": "assets/sideBar.svg"
+        }
+      ]
+    },
+    "views": {
+      "matman": [
+        {
+          "id": "matman.treeView",
+          "name": "matman 覆盖率"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "matman.treeView",
+        "contents": "[显示全量覆盖率](command:matman.showfullcoverage)\n[隐藏全量覆盖率](command:matman.hidefullcoverage)\n[显示增量覆盖率](command:matman.showincrementcoverage)\n[隐藏增量覆盖率](command:matman.hideincrementcoverage)\n"
+      }
     ]
   },
   "devDependencies": {
