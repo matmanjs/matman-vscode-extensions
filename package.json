@@ -74,6 +74,10 @@
       {
         "language": "javascript",
         "path": "./snippets/dwt.code-snippets"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/mockstar.code-snippets"
       }
     ],
     "viewsContainers": {
