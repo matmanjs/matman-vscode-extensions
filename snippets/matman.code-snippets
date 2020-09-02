@@ -206,7 +206,7 @@
       "",
       "  // 使用 mockstar 来做 mock server 用于构造假数据",
       "  if (queryDataMap || pageDriverOpts.queryDataMap) {",
-      "    pageDriver.useMockstar(",
+      "    await pageDriver.useMockstar(",
       "      _.merge({}, queryDataMap, pageDriverOpts.queryDataMap)",
       "    );",
       "  }",
