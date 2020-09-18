@@ -1,6 +1,6 @@
 {
   "name": "matman",
-  "displayName": "matman For Web E2E Testing",
+  "displayName": "matman For Web UI/E2E Testing",
   "description": "基于 matman 做 web 端对端测试（E2E，End-to-End Testing）的辅助插件",
   "version": "0.3.8",
   "engines": {
